@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  
+  # Subdomain ellenőrzése
+  # RewriteCond %{HTTP_HOST} ^subdomain\.example\.com$ [NC]
+
+  # Környezeti változók beállítása
+  SetEnv DB_HOST pelda_host
+  SetEnv DB_NAME test_db
+  SetEnv DB_USER user
+  SetEnv DB_PASSWORD password
+
+  SetEnv CLIENT_ID abb0ae90-1dde-4203-bd0b-523f263ae120
+  SetEnv CLIENT_SECRET Apd5l6rzq96njwfes3rUgj2acgknunZwhRblUjU02PM
+
+  # Ha a public mappában lévő fájlra érkezett a kérés, szolgáld ki a fájlt
+  RewriteCond %{REQUEST_URI} ^.*public/(.*)
+  RewriteRule ^(.*)$ src/public/%1 [END]
+
+  # Minden más esetben az index.php-t futtasd le
+  RewriteRule (.*)  src/index.php [QSA]
+</IfModule>

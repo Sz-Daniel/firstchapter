@@ -1,0 +1,27 @@
+<!-- $params['comments'] $params['post'] $params['user']-->
+<?php  $post = $params['post']; $user = $params['user']?>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <!-- Main Post -->
+                <div class="post-container">
+                    <h2><a href="https://jsonplaceholder.typicode.com/users/<?= $user['id']?>"><?= $user['username']?> - <?= $user['name']?></a></h2>
+                    <h4><?= $post['title'] ?></h4>
+                    <p><?= $post['body'] ?></p>
+                </div>
+                <!-- Comments -->
+                <div class="comment-container">
+                    <h3>Comments</h3>
+<?php foreach($params['comments'] as $comment): ?>   
+                    <div class="comment">
+                        <p><strong><?= $comment['name'] ?></strong></p>
+                        <p><?= $comment['email'] ?></p>
+                        <p><?= $comment['body'] ?></p>
+                    </div>
+<?php endforeach?> 
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

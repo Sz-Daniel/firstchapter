@@ -1,0 +1,64 @@
+<section>
+    <div class="container mt-4">
+        <!-- 
+            Resources list we could print out with every data
+            https://jsonplaceholder.typicode.com/posts
+        -->
+        <form action="/resources" method="POST" class="form-inline">
+            <div class="col-md-6 mb-3">
+                <label for="resourceType" class="form-label">Select Resource Type:</label>
+                <select name="type" id="resourceType" class="form-select" required>
+                    <option value="/posts" <?= ($_POST['type']==="/posts" ? "selected" : "")?>>Posts</option>
+                    <option value="/comments" <?= ($_POST['type']==="/comments" ? "selected" : "")?>>Comments</option>
+                    <option value="/albums" <?= ($_POST['type']==="/albums" ? "selected" : "")?>>Albums</option>
+                    <option value="/photos" <?= ($_POST['type']==="/photos" ? "selected" : "")?>>Photos</option>
+                    <option value="/todos" <?= ($_POST['type']==="/todos" ? "selected" : "")?>>Todos</option>
+                    <option value="/users" <?= ($_POST['type']==="/users" ? "selected" : "")?>>Users</option>
+                    <option value="https://fakestoreapi.com/users" <?= ($_POST['type']==="/https://fakestoreapi.com/users" ? "selected" : "")?>>Login</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary">Do it</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+
+
+
+<section name="responseField">
+    <div class="container mt-4">
+        <?= (isset($_POST['type'])==="/posts" ? "selected" : "")?>
+        <?php
+        
+        if (isset($_POST['type'])) {
+            echo '<br>POST: <pre>';
+            var_dump($_POST);
+            $content = apiResources($_POST['type']);
+            echo '<br>RESPONSE: <pre>';
+            var_dump($content);
+        }
+        ?>
+    </div>
+</section>
+
+<?php 
+/**
+ * default : https://jsonplaceholder.typicode.com/todos/1
+ * Összeillesztjük az url-t a form által kiválasztott adat alapján
+ * elküldjük a kérést és a választ JSON dekódoljuk használható formátumba asszociatív tömbként és ezt fogjuk későbbiekben felhasználni 
+ */
+function apiResources($route){
+    if ($route === 'https://fakestoreapi.com/users') {
+        $response = file_get_contents($route);
+        $content = json_decode($response,true);
+        return $content;
+    }
+    $url = "https://jsonplaceholder.typicode.com/".$route;
+    $response = file_get_contents($url);
+    $content = json_decode($response,true);
+    return $content;
+}
+
+?>
