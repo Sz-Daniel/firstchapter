@@ -1,16 +1,6 @@
 <?php
+//prototype functiions for trying something
 require './upgrade.php';
-/** Routes Handler (Step-by-Step)
- *  Retrieve the method used on the previous page = Request method received by the index page -> $_SERVER['REQUEST_METHOD']
- *  Which page the user wants to jump to = Requested page from the request -> $_SERVER['REQUEST_URI']
- *  Create the page map as routes (with a fallback for page not found) -> ?? "notFoundHandler"
- *  PHP is able to call a function where the function name is a string, and this is the basis of the procedure -> $handlerFunction()
- *  
- *  How Handler works
- *  We will need a compiler that is built with the actual page from the template with a prebuilt page -> compileTemplate
- *  Compiler collect params like form data, sql data and other state data and give to the prebuilded page 
- *  and it give back the whole page as string
- */
 
 //Routes Map
 $routes = [
@@ -75,6 +65,10 @@ function loginHandler(){
 }
 
 function resourcesHandler(){
+
+    /**
+     * ide írni az adatlekérést és az adatot továbbítani.
+     */
     echo render("wrapper.phtml",[
         'content' => render('resources.phtml'),
     ]);
@@ -89,8 +83,6 @@ function homeHandler(){
         ])
     ]);
 };
-
-
 
 function render($path, $params=[]){
     ob_start();
