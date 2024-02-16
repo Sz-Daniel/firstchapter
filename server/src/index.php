@@ -2,12 +2,20 @@
 //prototype functiions for trying something
 require './upgrade.php';
 
+/** includes data: mainpage posts - post comments - poster user
+ *  GET '/' , '/comments?postId'
+ */
+require './posts.php';
+
+
+require './auth.php';
 //Routes Map
 $routes = [
     "GET" => [
         '/' => 'homeHandler',
         '/resources' => 'resourcesHandler',
         '/login' => 'loginHandler',
+        '/logout' => 'logoutHandler',
         '/comments' => 'commentHandler',
 
         '/posts/1/comments' => 'tryHandler',
@@ -31,47 +39,30 @@ $safeHandlerFunction = function_exists($handlerFunction) ? $handlerFunction : "n
 //Handler call
 $safeHandlerFunction();
 
+function render($path, $params=[]){
+    ob_start();
+    require __DIR__.'/views/'.$path;
+    return ob_get_clean();
+};
 
 
-function commentHandler(){
-    $url = '/comments?postId='.$_GET['postId'];
-    $comments = apiGet($url);
-
-    $url = '/posts/'.$comments[0]['postId'];
-    $post = apiGet($url);
-
-    $url = '/users/'.$post['userId'];
-    $user = apiGet($url);
-
-    echo render("wrapper.phtml",[
-        'content' => render('comments.phtml',[
-            'comments' => $comments,
-            'post' => $post,
-            'user' => $user
-        ]),
-    ]);  
-}
-
-function loginProcessHandler(){
-    echo 'Login Process<pre>';
-    var_dump($_POST);
-    echo '<a href="/">Go to home page</a>';
-}
-
-function loginHandler(){
-    echo render("wrapper.phtml",[
-        'content' => render('login.phtml'),
-    ]);    
-}
-
-function resourcesHandler(){
-
-    /**
-     * ide írni az adatlekérést és az adatot továbbítani.
+function apiGetCall($source , $param = "users/1"){
+    /** Dinamic API call, GET method, source controlled
+     *  First param for schoose which API source needed
+     *      0 - https://fakestoreapi.com/
+     *      1 - https://jsonplaceholder.typicode.com/
+     *  Second param for subpage + query
+     *  return with result as assoc array
      */
-    echo render("wrapper.phtml",[
-        'content' => render('resources.phtml'),
-    ]);
+    switch ($source) {
+        case 0:
+            $url = "https://fakestoreapi.com/".$param;
+            break;
+        case 1:
+            $url = "https://jsonplaceholder.typicode.com/".$param;
+            break;
+    }
+    return json_decode(file_get_contents($url),true);
 }
 
 function homeHandler(){
@@ -84,14 +75,6 @@ function homeHandler(){
     ]);
 };
 
-function render($path, $params=[]){
-    ob_start();
-    require __DIR__.'/views/'.$path;
-    return ob_get_clean();
-};
 
-function apiGet($param = "posts/1"){
-    $url = "https://jsonplaceholder.typicode.com/".$param;
-    return json_decode(file_get_contents($url),true);
-}
+
  

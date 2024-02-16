@@ -4,14 +4,20 @@
             <h2 class="mb-4">Login</h2>
 
             <div class="mb-3">
-                <label for="email" class="form-label">email:</label>
-                <input type="email" name="email" id="email" class="form-control" required>
+                <label for="username" class="form-label">username:</label>
+                <input type="text" name="username" id="username" class="form-control" value="mor_2314" required>
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">Password:</label>
-                <input type="password" name="password" id="password" class="form-control" required>
+                <input type="password" name="password" id="password" class="form-control" value="83r5^_" required>
             </div>
+
+            <?php if(isset($_GET['info']) && $_GET['info']==="invalidCredentials"):?>
+                <div class="mb-3" class="">
+                    <label for="password" class="form-label">Wrong</label>
+                </div>
+            <?php endif?>
 
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
