@@ -13,11 +13,11 @@
                 <input type="password" name="password" id="password" class="form-control" value="83r5^_" required>
             </div>
 
-            <?php if(isset($_GET['info']) && $_GET['info']==="invalidCredentials"):?>
+<?php if(isset($_GET['info']) && $_GET['info']==="invalidCredentials"):?>
                 <div class="mb-3" class="">
                     <label for="password" class="form-label">Wrong</label>
                 </div>
-            <?php endif?>
+<?php endif?>
 
             <button type="submit" class="btn btn-primary">Login</button>
         </form>

@@ -1,9 +1,9 @@
 <?php
 function resourcesHandler(){
     /**
-     * típus-t vizsgáljuk történt-e előzőleg típus kiválasztás
-     * az alapján összeállítjuk a megfelelő url-t, föggően melyik forráshoz nyúlunk
-     * lekérjük az adatokat és továbbítjuk paraméterként ahol megjelnítődik az 
+     * check the type from POST
+     * merge the url with params, depends on source
+     * query the data and send back to the resources page
      */
     $content ="";
     if (isset($_POST['type'])) {
@@ -23,6 +23,9 @@ function resourcesHandler(){
 }
 
 function commentHandler(){
+    /** GET the post id
+     * 
+     */
     $url = '/comments?postId='.$_GET['postId'];
     $comments = apiGetCall(1,$url);
 

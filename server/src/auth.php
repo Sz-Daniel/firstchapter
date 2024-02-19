@@ -14,35 +14,40 @@ function loginProcessHandler(){
      */
 
     // POST data check
-    $username = $_POST['username'] ?? "";
+    $username = htmlspecialchars($_POST['username']) ?? "";
     $password = $_POST['password'] ?? "";  
+    if (empty($username)||empty($password)) {
+        header('Location: /login?info=invalidCredentials');
+        exit;
+    }
 
     //Get all user's data
     $url ="https://fakestoreapi.com/users";
     $users = json_decode(file_get_contents($url),true);
-
+    if ($users === null) {
+        header('Location: /login?info=invalidCredentials');
+        exit;
+    }
     /**
      * Search in db by username
      * If the username exists, store the index for deepcheck
+     * new verion, prev in README
      */
-    $user_index = null;
-    foreach ($users as $index => $user) {
-        if ($user['username'] === $username) {  
-            $user_index = $index; 
-            break;
-        }    
-    }
+    //list, as array, only usernames
+    $usernameList = array_column($users, 'username');
+    //search on array, one specific data
+    $userIndex = array_search($username, $usernameList );
 
     /**Early Return
      * If the stored user_index not exists go back to Login page with error
      * If the username not exists go back to Login page with error
      */
-    if(!isset($user_index)){
+    if(!$userIndex){
         header('Location: /login?info=invalidCredentials');
         exit;
     }
-
-    if(!$users[$user_index]['password']===$password){
+    //in hesh case I would use password_verify(), without knowing what kind of hesh they used for password store
+    if(!$users[$userIndex]['password']===$password){
         header('Location: /login?info=invalidCredentials');
         exit;    
     }
@@ -52,11 +57,10 @@ function loginProcessHandler(){
      * create a session-cookie for user data 
      * then goes back 
      */
-    //create a session
     session_start();
 
     //with active session create a 'userId' cookie
-    $_SESSION['userId'] = $users[$user_index]['id'];
+    $_SESSION['userId'] = $users[$userIndex]['id'];
 
     header('Location: /');
     exit;
@@ -66,7 +70,7 @@ function isLoggedIn(){
     /**Early Return
      * Check every detail on session-cookie
      */
-    //Check, if the browser have any session cookie
+    //Check, if the browser have any cookie
     if (!isset($_COOKIE[session_name()])) {
         return false;
     }
@@ -98,6 +102,7 @@ function isLoggedIn(){
 function isAuth(){
     /**
      * Make sure is the user able to see the page
+     * or go back to main page
      */
     if (!isLoggedIn()) {
         header('Location: /login');
@@ -120,3 +125,4 @@ function logoutHandler(){
     header ('Location: /');
 }
 ?>
+

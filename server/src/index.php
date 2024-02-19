@@ -1,14 +1,13 @@
 <?php
-//prototype functiions for trying something
+//prototype functions for trying something
 require './upgrade.php';
 
-/** includes data: mainpage posts - post comments - poster user
- *  GET '/' , '/comments?postId'
- */
+//resourcesHandler,commentHandler
 require './posts.php';
 
-
+//loginHandler,loginProcessHandler,isLoggedIn,isAuth,logoutHandler
 require './auth.php';
+
 //Routes Map
 $routes = [
     "GET" => [
@@ -18,7 +17,6 @@ $routes = [
         '/logout' => 'logoutHandler',
         '/comments' => 'commentHandler',
 
-        '/posts/1/comments' => 'tryHandler',
     ],
     "POST" => [
 
@@ -29,13 +27,17 @@ $routes = [
 
 //Get the method
 $method = $_SERVER["REQUEST_METHOD"];
+
 //Get the URI -> Path
 $parsed = parse_url($_SERVER['REQUEST_URI']);
 $path = $parsed['path'];
+
 //Page map and Got data checking
 $handlerFunction = $routes[$method][$path] ?? "notFoundHandler";
+
 //Double check - As function exists
 $safeHandlerFunction = function_exists($handlerFunction) ? $handlerFunction : "notFoundHandler";
+
 //Handler call
 $safeHandlerFunction();
 
@@ -45,13 +47,13 @@ function render($path, $params=[]){
     return ob_get_clean();
 };
 
-
 function apiGetCall($source , $param = "users/1"){
     /** Dinamic API call, GET method, source controlled
      *  First param for schoose which API source needed
      *      0 - https://fakestoreapi.com/
      *      1 - https://jsonplaceholder.typicode.com/
      *  Second param for subpage + query
+     *  "users/1" is exists both cases
      *  return with result as assoc array
      */
     switch ($source) {
