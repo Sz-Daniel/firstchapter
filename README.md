@@ -2,6 +2,11 @@
 FirstChapter: 
 Currently, my main focus is on the PHP language and the application of learned functionalities - CRUD, Login, Routes. Once I exhaust my knowledge in this language, I plan to continue with JavaScript, refactor functions, and, if possible, manually format using Bootstrap at the very end.
 
+Long-term plan:
+Once I completely finish this 'chapter,' I will create an entirely different project with an active API source.
+The setup and configuration of docker-phpmyadmin-mysql are not mine. I utilize it from a completed course to ensure smooth development.
+In the future, there are plans to complete additional courses: advanced PHP - Docker - Node.js - JS framework - PHP framework learning and working with them.
+
 Code Documentation - Junior Journal
 
 As a junior, during development, I first try to rely on my own knowledge, building it piece by piece, and then, when looking at the big picture, I use ChatGPT3.5 to find directions on how to make it more efficient, solve it differently, look up documentation for new features, and explore other online resources. Similarly, I follow this process when dealing with potential issues.
@@ -31,8 +36,10 @@ foreach ($users as $index => $user) {
         break;
     }    
 }
+Better:
+//list, as array, only usernames
+$usernameList = array_column($users, 'username');
+//search on array, one specific data
+$userIndex = array_search($username, $usernameList );
 
-Long-term plan:
-Once I completely finish this 'chapter,' I will create an entirely different project with an active API source.
-The setup and configuration of docker-phpmyadmin-mysql are not mine. I utilize it from a completed course to ensure smooth development.
-In the future, there are plans to complete additional courses: advanced PHP - Docker - Node.js - JS framework - PHP framework learning and working with them.
+
