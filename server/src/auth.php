@@ -57,7 +57,9 @@ function loginProcessHandler(){
      * create a session-cookie for user data 
      * then goes back 
      */
-    session_start();
+    if (!isset($_SESSION)) {
+        session_start();
+    }
 
     //with active session create a 'userId' cookie
     $_SESSION['userId'] = $users[$userIndex]['id'];
@@ -115,7 +117,9 @@ function isAuth(){
 
 function logoutHandler(){
 
-    session_start();
+    if (!isset($_SESSION)) {
+        session_start();
+    }
     $params = session_get_cookie_params();
 
     setcookie(session_name(), '', 0, $params['path'],$params['domain'],$params['secure'],$params['httponly'] );
@@ -125,4 +129,3 @@ function logoutHandler(){
     header ('Location: /');
 }
 ?>
-
