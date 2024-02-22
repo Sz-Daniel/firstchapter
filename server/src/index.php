@@ -13,6 +13,7 @@ $routes = [
     "GET" => [
         '/' => 'homeHandler',
         '/resources' => 'resourcesHandler',
+        '/scretch' => 'scretchHandler',
         '/login' => 'loginHandler',
         '/logout' => 'logoutHandler',
         '/comments' => 'commentHandler',
@@ -77,3 +78,13 @@ function homeHandler(){
     ]);
 };
 
+function scretchHandler(){
+    /**
+     * Build up new functions for the backend and check the result data
+     */
+
+     echo render("wrapper.phtml",[
+        'content' => render("scretch.phtml",[
+        ])
+    ]);
+}

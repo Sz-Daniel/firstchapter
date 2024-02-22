@@ -47,6 +47,7 @@ function loginProcessHandler(){
         exit;
     }
     //in hesh case I would use password_verify(), without knowing what kind of hesh they used for password store
+    //User database stores password as string, not using hash, I cannot change that
     if(!$users[$userIndex]['password']===$password){
         header('Location: /login?info=invalidCredentials');
         exit;    
@@ -120,10 +121,10 @@ function logoutHandler(){
     if (!isset($_SESSION)) {
         session_start();
     }
+ 
     $params = session_get_cookie_params();
-
     setcookie(session_name(), '', 0, $params['path'],$params['domain'],$params['secure'],$params['httponly'] );
-
+    
     session_destroy();
 
     header ('Location: /');
