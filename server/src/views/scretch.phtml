@@ -3,80 +3,39 @@
 //createTable // ALTER TABLE // //uploadTableData
 //existsTableData
 //uploadTableData
-$table="test";
+$table="cities";
 echo "<pre>";
 
 /**
  * Check if the table is exists
  * if not, create that
  */
-var_dump(checkUsersTable());
-exit;
 
-if (!checkTable($table)) {
-    echo "<br>wrong";
-    exit;    
+if (!checkUsersTable()) {
+   echo "New";
 }
-echo "<br>Table exists ";
-var_dump(checkTable($table));
+echo "One";
+echo "<br>Data exists ".$table."<br>";
+var_dump(checkUsersData($table));
 
-if (!checkTableData($table)){
-    echo "<br>wrong";
-    exit; 
-}
-echo "<br>Data exists ";
-var_dump(checkTableData($table));
-
-echo "<br>Data source ";
-var_dump(userCount());
-
-if (checkTableData($table) != (userCount())) {
-    echo "Data not same";
-}
-
-echo "<br>win";
-
-function getUserById(){
+function getPostById(){
 
 }
 
-function editUserById(){
+function editPostById(){
 
 }
 
-function deleteUserById(){
+function deletePostById(){
 
 }
 
-function createUser(){
+function createPost(){
 
 }
 
-function getConnection(){
-
-}
-
-
-function checkTableData($tableName){
-    try {
-        $pdo = new PDO(
-            'mysql:host=' . $_SERVER['DB_HOST'] . ';dbname='. $_SERVER['DB_NAME'], 
-            $_SERVER['DB_USER'],
-            $_SERVER['DB_PASSWORD']
-        );
-        
-        $sql = "SELECT * FROM `".$tableName."`";
-        $res = $pdo->query($sql);
-        $count = $res->fetchColumn();
-
-        if (!$count) {
-            return false;
-        }
-        return $count;
-
-    } catch (PDOException $pdoe) {
-        return false; 
-    }
+function uploadBulkData(){
+    //Kitalálni hogy kellene ellenőrizni és kezelni a nagyobb adathalmazt
 }
 
 function userCount(){
@@ -84,35 +43,26 @@ function userCount(){
     return count($usersAPI);
 }
 
-function store(){/*
+function checkUsersData($tableName){
+    try {
+        $pdo = getConnection();
+        
+        $sql = "SELECT COUNT(*) FROM `".$tableName."`";
+        $res = $pdo->query($sql);
+        $columns = $res->fetchColumn();
 
-    $id = array_column($usersAPI,"id");
-    array_multisort($id, SORT_ASC, $usersAPI);
-    echo '<pre>';
-    foreach ($usersAPI as $user) {
-
-        var_dump($user); 
+        $srcCount = userCount();  
+        if ($srcCount === $columns) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (PDOException $pdoe) {
+        echo "<br>Error:<br>";
+        var_dump($pdoe);
+        return false; 
     }
-
-    if (!$tableEx) {
-        createUserTable();
-    } 
-
-    $sql1 = "SELECT * FROM `".$tableName."`";
-    $stmt =  $pdo->prepare($sql1);
-    try{
-        $stmt->execute();
-        $dataEx = $stmt->fetchColumn();
-    } catch (PDOException $e) {
-        die("<br>Tábla adat ellenőrzés hibája: " . $e->getMessage());
-    }
-    if (!$dataEx) {
-        # code...
-    }
-*/
 }
-
-
 
 function checkUsersTable(){
     try {
@@ -143,14 +93,14 @@ function checkUsersTable(){
         $stmt =  $pdo->prepare($sql);
         try {
             $result = $stmt->execute();
-            return $result;
+            echo "Tábla létrehozva";
+            return false;
         } catch (PDOException $e) {
             $errorCode = $e->errorInfo[0];
             if ($errorCode === '42S01') {
-                // Itt kezeld a várt hibakódot
                 echo "A tábla már létezik.";
+                return true;
             } else {
-                // Kezeld az egyéb hibakódokat vagy dobj további kivételt
                 die("Hiba: " . $e->getMessage());
             }
         }
@@ -159,7 +109,17 @@ function checkUsersTable(){
     }
 }
 
+function getConnection(){
+    $pdo = new PDO ( 
+        'mysql:host='.$_SERVER['DB_HOST'].';dbname='.$_SERVER['DB_NAME'],
+        $_SERVER['DB_USER'],
+        $_SERVER['DB_PASSWORD']
+    );
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    return $pdo;
+}
 
+//Just for documentation
 function checkTable($tableName){
     /** Journey around creating tables
      * Original plan was: Make sure the table is already exists, 
