@@ -1,7 +1,0 @@
-<?php
-/**
- * Test functions here
- */
-
- 
-?>

@@ -1,6 +1,4 @@
 <?php
-//prototype functions for trying something
-require './upgrade.php';
 
 //resourcesHandler,commentHandler
 require './posts.php';
