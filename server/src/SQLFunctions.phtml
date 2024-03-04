@@ -34,7 +34,7 @@ function checkDB(){
             logJS("Table, data check was successfully");
             }
          }
-         uploadBulkData($pdo);
+         uploadDataBatchExe($pdo);
     } catch (Exception $e) {
         logJS("Hiba: ", $e->getMessage());
     }finally{
@@ -42,7 +42,7 @@ function checkDB(){
     }
 }
 
-function uploadBulkData($pdo){
+function uploadDataBatchExe($pdo){
     //Get the API source data
     $usersAPI = json_decode(file_get_contents("https://fakestoreapi.com/users"),true);
 
@@ -76,8 +76,9 @@ function uploadBulkData($pdo){
                 ':phone' => $user['phone'],
             ]);
             /** ON DUPLICATE
-             * Amennyiben van érték, akkor annak adatait idLogba eltároljuk
-             * Végén kiiratjuk 
+             * rowCount() return value affected row, due ON DUPLICATE KEY UPDATE id = :id';
+             * updated 1 - (bool)true, not updated 0 = (bool) false 
+             * in case of true, we store that user data
              */
             if ((bool)$statement->rowCount()) {
                 array_push($idLog['user'],$user);
@@ -85,6 +86,7 @@ function uploadBulkData($pdo){
             }
         }
         $pdo->commit();
+        // if any data was updated, then log out
         if($idLog['count'] > 0){
             logJS("Data uploaded:",$idLog);
         } 
@@ -183,11 +185,6 @@ function getConnection(){
 
 function logJS(...$dataArray){
     //Params: if I want to Give a string before, or multiply data to log in a same time, then I have to use '...' 
-    /**I wanted to see through my code, which phases works, results etc.
-     * echo and var_dump works fine but after a while, these looks little trashy, toomuch information.
-     * I wanted to follow my workflow easy-to-read, and if it's possible, I want to avoid
-     * write the status to the view - so I wanted to use the console for development.
-     */
     
     foreach ($dataArray as  $data) {
         if ($data instanceof Exception) {

@@ -55,7 +55,7 @@ JS esetében kényelmes megoldás volt a fejlesztés közben a console.log haszn
 Kiegészítő eljárásra van szükség, ellenőrizni, hogy adatbázis tábla és adatok készen álljanak.
 Le kell ellenőrizni hogy a tábla létezik, ha nem akkor hozzuk létre. Több módon próbáltam meg.
 
-********Table**
+#### Table
 CREATE TABLE eljárással és hibakezeléssel kiszűrhető hogy létezett e előtte a tábla (error code: 42S01)
 Amennyiben a tábla már létezett előtte le kell ellenőrizni hogy a tábla adatmennyisége egyezik-e az API forrás adataival. Amennyiben a feltételeknek megfelel, kiléptetjük az ellenőrzésből, early returnnal.
 Abban az esetben ha a táblát ekkor hozzuk létre, akkor a táblát fel kell tölteni, illetve ha nem azonos a tábla és frissíteni kell, vagy hiányos, szintén fel kell tölteni. 
@@ -63,7 +63,7 @@ Abban az esetben ha a táblát ekkor hozzuk létre, akkor a táblát fel kell t�
 **JJ**
 "IF NOT EXISTS" kifejezést használva próbáltam eljárni, viszont lefutásakor nincs adat hogy létezett-e előtte a tábla, szándékomban áll átlátni a folyamatokat. Keresés után rátaláltam "SELECT 1 FROM information_schema.tables WHERE table_schema = database() AND table_name = ?" eljárásra ami megfelelő egy előzetes ellenőrzésre tökéletesnek bizonyult. Viszont amint létrehoztam a CREATE TABLE eljárást, egyértelmű lett hogy a tábla nem fog létrejönni ha már létezett, ilyen módon. Így a hibakezelés által, lekérdezem a megfelelő hibakódot, akkor egyértelmű lesz hogy volt-e előtte vagy sem.
 
-**Data**
+#### Data
 SQL data upload, uploadDataBatchExe. Ezesetben az adott insert lekérdezést egyessével paramétereztetjük és hajtjuk végre, és kezeljük le az eredményt. Hibakezelésen túl szükséges transition (begin transition - commit) keretbe foglalása ami, hibás lefutás esetén visszaállítja(rollback) az esemény előtti állapotra, elkerülve a félbehagyott módosítási problémákat.
 
 **JJ**
