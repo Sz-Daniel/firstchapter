@@ -1,24 +1,142 @@
 <?php
-function getUserById($id){
-    $pdo = getConnection();
+/** APIFunctionön belüli APIcUrlCall hoz hasonlóan gondolkodtam hogy itt is létrehozzak egy dinamikusan működő függvényt, 
+ * viszont nem készítem el, fő indok hogy ezesetben nincs szükség annyira változatos hívásokra
+ * hívásonként többszörösen összefüggők a szükséges függvények (INSERT INTO VALUE(egyessével) - bindParams(egyessével) )
+ * Nem lehetetlen hogy a későbbiekben létre fogom hozni 
+ */
 
+function SQLGetUsers(){
+    try {
+        $pdo = getConnection();
+
+        $sql = "SELECT * FROM `users`";
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->execute();
+        $userList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pdo = null;
+        return $userList;
+
+    } catch (\Throwable $th) {
+        logJS("User query error:", $th);
+        $pdo = null;
+        return null;
+    }
 }
 
-function editPostById(){
+function SQLGetUserById( $id ){
+    try {
+        $pdo = getConnection();
 
+        $sql = "SELECT * FROM `users` WHERE id = :id";
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$user) {
+            throw new Exception("User doesn't exits.");
+        }        
+
+        logJS($user);
+        $pdo = null;
+        return $user;
+    } catch (\Throwable $th) {
+        logJS("User error:", $th);
+        $pdo = null;
+        return null;    
+    } 
 }
 
-function deletePostById(){
+function SQLEditUserById( $data = [] ){
+    try {
+        $pdo = getConnection();
 
+        $sql = "UPDATE `users` 
+        SET `email`=:email, `username`=:username, `pwd`=:pwd, `phone`=:phone 
+        WHERE `id` = :id";
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->bindParam(':id',$data['id'], PDO::PARAM_INT);
+        $stmt->bindParam(':email',$data['email'],PDO::PARAM_STR);
+        $stmt->bindParam(':username',$data['username'],PDO::PARAM_STR);
+        $stmt->bindParam(':pwd',$data['pwd'],PDO::PARAM_STR);
+        $stmt->bindParam(':phone',$data['phone'],PDO::PARAM_STR);
+
+        //Only one usable result we could have, how many rows were affected (1)
+        $stmt->execute();
+        $user = $stmt->rowCount();
+        if (!$user) {
+            throw new Exception("User doesn't exits.");
+        }        
+ 
+        $pdo = null;
+        return $user;
+    } catch (\Throwable $th) {
+        logJS($th);
+        $pdo = null;
+        return null;
+    }
 }
 
-function createUser(){
+function SQLDeleteUserById( $id ){
 
+    try {
+        $pdo = getConnection();
+
+        $sql = "DELETE FROM `users` 
+        WHERE `id` = :id";
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->bindParam(':id',$id,PDO::PARAM_INT);
+
+        //Only one usable result we could have, how many rows were affected (1)
+        $stmt->execute();
+        $user = $stmt->rowCount();
+        if (!$user) {
+            throw new Exception("User doesn't exits.");
+        }        
+        logJS($id."- user deleted");
+        $pdo = null;
+        return $user;
+    } catch (\Throwable $th) {
+        logJS("User delete error:", $th);
+        $pdo = null;
+        return null;
+    }
 }
 
-// Kiegészítő funkció részleg
+function SQLCreateUser( $user=[] ){
+    try {
+        $pdo = getConnection();
 
-function checkDB(){
+        $sql = "INSERT INTO users(email,username,pwd,phone) 
+        VALUES(:email,:username,:pwd,:phone)";
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->bindParam(':email',$user['email'],PDO::PARAM_STR);
+        $stmt->bindParam(':username',$user['username'],PDO::PARAM_STR);
+        $stmt->bindParam(':pwd',$user['pwd'],PDO::PARAM_STR);
+        $stmt->bindParam(':phone',$user['phone'],PDO::PARAM_STR);
+        $stmt->execute();
+
+        $user = $stmt->rowCount();
+        if (!$user) {
+            throw new Exception("User upload fail");
+        }        
+        logJS("User uploaded:", $user);
+        $pdo = null;
+        return $user;
+    } catch (\Throwable $th) {
+        logJS("New User upload error:", $th);
+        $pdo = null;
+        return null;
+    }
+}
+
+// users Prepare section
+function checkSQL(){
     /**
      * Table exists? , Data was valid?
      * True - True = Early exit.
@@ -35,10 +153,21 @@ function checkDB(){
             }
          }
          uploadDataBatchExe($pdo);
+         addAutoIncr($pdo);
     } catch (Exception $e) {
         logJS("Hiba: ", $e->getMessage());
     }finally{
         $pdo = NULL;
+    }
+}
+
+function addAutoIncr($pdo){
+    try {
+     //ALTER TABLE `users` MODIFY COLUMN id INT AUTO_INCREMENT PRIMARY KEY;
+     $stmt = $pdo->prepare("ALTER TABLE `users` MODIFY COLUMN id INT AUTO_INCREMENT");
+     $stmt->execute();
+    } catch (\Throwable $th) {
+     logJS($th);
     }
 }
 
@@ -180,19 +309,5 @@ function getConnection(){
     } catch (Exception $e) {
         logJS("PDO Connection error:", $e);
         return null;
-    }
-}
-
-function logJS(...$dataArray){
-    //Params: if I want to Give a string before, or multiply data to log in a same time, then I have to use '...' 
-    
-    foreach ($dataArray as  $data) {
-        if ($data instanceof Exception) {
-            //In Exception case, we get the Error message
-            echo '<script>console.log('.json_encode($data->getMessage()).');</script>';
-        }else {
-            //or just we want to check some data, sometimes easier to read then var_dump
-            echo '<script>console.log('.json_encode($data).');</script>';
-        }
     }
 }

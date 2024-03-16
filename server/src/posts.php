@@ -15,6 +15,7 @@ function resourcesHandler(){
         $content = json_decode($response, true);
     }
 
+    //http://localhost:8080/resources -> resources.phtml
     echo render("wrapper.phtml",[
         'content' => render('resources.phtml',[
             'content' => $content
@@ -23,23 +24,31 @@ function resourcesHandler(){
 }
 
 function commentHandler(){
-    /** GET the post id
-     * 
+    /**
+     *  GET postId from postList.phtml href="/comments?postId=$post['id']?>"
+     *  apiGetCall is a simple php file_get_content result function with the 
+     *  embedded url
      */
-    $url = '/comments?postId='.$_GET['postId'];
-    $comments = apiGetCall(1,$url);
+    //Original post data call
+    $postId = $_GET['postId'] ?? '';
+    $queryPost = '/posts/'.$postId;
+    $post = apiGetCall($queryPost);
 
-    $url = '/posts/'.$comments[0]['postId'];
-    $post = apiGetCall(1,$url);
+    //Author info
+    $authorId = $post['userId'];
+    $queryAuthor = '/users/'.$authorId;
+    $user = apiGetCall($queryAuthor);
 
-    $url = '/users/'.$post['userId'];
-    $user = apiGetCall(1,$url);
+    //Post comments
+    $queryComments = '/posts/'.$postId.'/comments';
+    $comments = apiGetCall($queryComments);
 
+    //http://localhost:8080/comments?postId=? -> comments.phtml
     echo render("wrapper.phtml",[
         'content' => render('comments.phtml',[
-            'comments' => $comments,
             'post' => $post,
-            'user' => $user
+            'user' => $user,
+            'comments' => $comments,
         ]),
     ]);  
 }

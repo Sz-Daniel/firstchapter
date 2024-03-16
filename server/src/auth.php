@@ -1,12 +1,25 @@
 <?php
 function loginHandler(){
-    echo render("wrapper.phtml",[
-        'content' => render('login.phtml'),
-    ]);    
+    switch ($_SERVER['REQUEST_METHOD']) {
+        case 'POST':
+            $loginData = array(    
+                'username' => htmlspecialchars($_POST['username']) ?? "",
+                'password' => $_POST['password'] ?? ""
+            );
+            loginProcessHandler($loginData);
+            break;
+        case 'GET':
+            echo render("wrapper.phtml",[
+                'content' => render('login.phtml'),
+            ]);
+            break;
+    }    
 }
 
-function loginProcessHandler(){
-    /**
+function loginProcessHandler($param)
+{
+    try {
+        /**
      * Needs to check in the whole db first
      * then step-by-step verif the data
      * build up the session for userdata as session-cookie
@@ -14,19 +27,18 @@ function loginProcessHandler(){
      */
 
     // POST data check
-    $username = htmlspecialchars($_POST['username']) ?? "";
-    $password = $_POST['password'] ?? "";  
+    $username = $param['username'];
+    $password = $param['password'];
     if (empty($username)||empty($password)) {
-        header('Location: /login?info=invalidCredentials');
-        exit;
+        throw new Exception('Input empty');
     }
 
     //Get all user's data
     $url ="https://fakestoreapi.com/users";
     $users = json_decode(file_get_contents($url),true);
+    //$users = APIcUrlCall($url);
     if ($users === null) {
-        header('Location: /login?info=invalidCredentials');
-        exit;
+        throw new Exception('Users API problem');
     }
     /**
      * Search in db by username
@@ -43,14 +55,12 @@ function loginProcessHandler(){
      * If the username not exists go back to Login page with error
      */
     if(!$userIndex){
-        header('Location: /login?info=invalidCredentials');
-        exit;
+        throw new Exception('Users doesnt exist');
     }
     //in hesh case I would use password_verify(), without knowing what kind of hesh they used for password store
     //User database stores password as string, not using hash, I cannot change that
     if(!$users[$userIndex]['password']===$password){
-        header('Location: /login?info=invalidCredentials');
-        exit;    
+        throw new Exception('Password not match'); 
     }
 
     /**
@@ -67,42 +77,55 @@ function loginProcessHandler(){
 
     header('Location: /');
     exit;
+    } catch (\Throwable $th) {
+        logJS("login Process error: ".$th);
+        header('Location: /login?info=invalidCredentials');
+        exit;
+    }
 }
 
-function isLoggedIn(){
-    /**Early Return
-     * Check every detail on session-cookie
-     */
-    //Check, if the browser have any cookie
-    if (!isset($_COOKIE[session_name()])) {
+function isLoggedIn()
+{
+    try {
+        /**Early Return
+         * Check every detail on session-cookie
+         */
+        //Check, if the browser have any cookie
+        if (!isset($_COOKIE[session_name()])) {
+            throw new Exception('Browser dosent have cookie'); 
+        }
+
+        //make sure to have an active session 
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        
+        //check, have a "userId" session-cookie
+        if (!isset($_SESSION['userId'])){
+            throw new Exception('Browser dosent have cookie'); 
+        }
+
+        //merge the url with the neccessery data for an API call
+        $userId = $_SESSION['userId'] ?? '';
+        $url = 'https://fakestoreapi.com/users/'.$userId;
+        $user = json_decode(file_get_contents($url),true);
+
+        //$user = APIcUrlCall($url);
+
+        //check the user still in the database
+        if (!$user) {
+            throw new Exception('User not in db'); 
+        }
+
+        return true;
+    } catch (\Throwable $th) {
+        logJS("isLogged error: ".$th);
         return false;
     }
-
-    //make sure to have an active session 
-    if (!isset($_SESSION)) {
-        session_start();
-    }
-    
-    //check, have a "userId" session-cookie
-    if (!isset($_SESSION['userId'])){
-        return false;
-    }
-
-    //merge the url with the neccessery data for an API call
-    $userId = $_SESSION['userId'] ?? '';
-    $url = 'https://fakestoreapi.com/users/'.$userId;
-    $user = json_decode(file_get_contents($url),true);
-
-    //check the user still in the database
-    if (!$user) {
-        return false;
-    }
-
-    //win
-    return true;
 } 
 
-function isAuth(){
+function isAuth()
+{
     /**
      * Make sure is the user able to see the page
      * or go back to main page
@@ -116,7 +139,8 @@ function isAuth(){
     exit;
 }
 
-function logoutHandler(){
+function logoutHandler()
+{
 
     if (!isset($_SESSION)) {
         session_start();
@@ -129,4 +153,3 @@ function logoutHandler(){
 
     header ('Location: /');
 }
-?>

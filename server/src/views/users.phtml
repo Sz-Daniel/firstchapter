@@ -1,0 +1,77 @@
+<?php 
+// Ebben a szegmensben azért használok SQL adat lekérés és módosítást,
+// mert az API verziósnál nem történik tényleges változtatás
+$users = $params['users'] ?>
+<section>
+    <div class="my-3">
+        <ul class="list-group">
+        <? foreach ($users as $user):?>
+            <li class="list-group-item">
+            <a href="/users/delete?userId=<?= $user['id']?>" class="btn btn-danger">Delete</a>
+            <a href="/users?editId=<?= $user['id']?>" class="btn btn-warning">Edit</a>
+                <?= $user['username']?> - 
+                <?= $user['email']?> - 
+                <?= $user['phone']?>
+            </li>
+        <? endforeach?>
+        </ul>   
+    </div>
+</section>
+
+<section>
+    <h3 class="my-3">Register</h3>
+    <div class="mb-3">
+        <form action="/register" method="post">
+            <div class="mb-3">
+                <label for="inputEmailReg" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" id="inputEmailReg" required>
+            </div>
+            <div class="mb-3">
+                <label for="inputUsernameReg" class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" id="inputUsernameReg" required>
+            </div>
+            <div class="mb-3">
+                <label for="inputPasswordReg" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="inputPasswordReg" required>
+            </div>
+            <div class="mb-3">
+                <label for="inputPhoneReg" class="form-label">Phone number</label>
+                <input type="text" class="form-control" name="phone" id="inputPhoneReg" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</section>
+
+<? if (isset($_GET['editId']) && !empty($_GET['editId']) ): 
+    $editId = (int)$_GET['editId'];
+    $user = SQLGetUserById($editId);
+?>
+<section>
+    <h3 class="my-3">Edit</h3>
+    <div class="mb-3">
+        <form action="/users/edit" method="post">
+            <input type="hidden" name="id" id="hiddenField" value="<?= $user['id'] ?>" />
+            <div class="mb-3">
+                <label for="inputEmailEdit" class="form-label">Email</label>
+                <input type="email" class="form-control" id="inputEmailEdit" name="email"  value="<?= $user['email']?>">
+            </div>
+            <div class="mb-3">
+                <label for="inputUsernameEdit" class="form-label">Username</label>
+                <input type="text" class="form-control" id="inputUsernameEdit" name="username" value="<?= $user['username']?>">
+            </div>
+            <div class="mb-3">
+                <label for="inputPasswordEdit" class="form-label">Password</label>
+                <input type="password" class="form-control" id="inputPasswordEdit" name="password" value="<?= $user['pwd']?>">
+            </div>
+            <div class="mb-3">
+                <label for="inputPhoneEdit" class="form-label">Phone number</label>
+                <input type="text" class="form-control" id="inputPhoneEdit" name="phone" value="<?= $user['phone']?>">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</section>
+<?  endif?>
