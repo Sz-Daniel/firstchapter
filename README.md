@@ -30,7 +30,7 @@ Compiler collect params like form data, sql data and other state data and give t
 and it give back the whole page as string
 
 ### logJS
-**Első Verzió**
+#### Első Verzió
 JS esetében kényelmes megoldás volt a fejlesztés közben a console.log használata, állapotok kiírása, eredmények és paraméterek kiiratása, ezért PHP függvényen belüli script meghívásakor, bármilyen és bármennyi paraméter meghívható, amik elemenként fog végrehajtódni és a PHP var_dump kiiratása illetve esetleges hibakód kezelése is consolba kerül kiiratásra. 
 ---
 function logJS(...$dataArray){
