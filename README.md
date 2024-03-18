@@ -1,22 +1,21 @@
 # firstchapter
 
-Currently, my main focus is on the PHP language and the application of learned functionalities - MySQL, CRUD, Login, Routes. Once I exhaust my knowledge in this language, I plan to continue with JavaScript, refactor functions, and, if possible, manually format using Bootstrap at the very end.
+Currently, my main focus is on the PHP language and the application of learned functionalities such as MySQL, CRUD, Login, and Routes, MVC. Once I exhaust my knowledge in this language, I plan to continue with JavaScript, refactor functions, and, if possible, manually format using Bootstrap at the very end.
 
 ### Long-term plan:
 
-Once I completely finish this 'chapter,' I will create an entirely different project with an active API source.
-The setup and configuration of docker-phpmyadmin-mysql are not mine. I utilize it from a completed course to ensure smooth development.
-In the future, there are plans to complete additional courses: advanced PHP - Docker - Node.js - JS framework - PHP framework learning and working with them.
+Once I completely finish this 'chapter,' I will create an entirely different project with an active API source. 
+The setup and configuration of docker-phpmyadmin-mysql is not mine. I utilize it from a completed course to ensure smooth development. 
+In the future, there are plans to complete additional courses: advanced PHP, Docker, Node.js, JS framework, PHP framework, learning, and working with them.
 
 # Code Documentation - Junior Journal - JJ
 
-As a junior, during development, I first try to rely on my own knowledge, building it piece by piece, and then, when looking at the big picture, I use ChatGPT3.5 to find directions on how to make it more efficient, solve it differently, look up documentation for new features, and explore other online resources. Similarly, I follow this process when dealing with potential issues. Elsődlegesen a tényleges megoldásom van kifejtve
->  **JJ** részekben pedig a mélyebb utánanézésekori magyarázatok, alternatív megoldások.
->  
-Sok esetben szándékosan nem egységesek a megoldások, technológiai és függvények használata. Szerettem volna hogyha látszódik hogyan fejlődtek a megoldásaim, technológiák használata. pld homeHandler-ben egyszerű file_get_contents függvénnyel kérem le az adatokat, APIFunctionben pedig egy dinamikus, bármilyen helyzetben használható API hívásra használható cURL folyamat van megalkotva, amit a legtöbb esetben alternatívaként commentben oda is van illesztve.
+As a junior developer, my approach to development is iterative. I initially rely on my own knowledge to build the solution piece by piece. Then, when considering the bigger picture, I use ChatGPT3.5 to seek directions on how to optimize it, explore alternative solutions, look up documentation for new features, and explore other online resources. Similarly, I follow this process when addressing potential issues.
+>  **JJ**  in these sections, deeper explanations and alternative solutions are provided.
+  
+In many cases, I intentionally use diverse solutions, technologies, and functions. I wanted to showcase the evolution of my solutions and the use of different technologies. For example, in the `homeHandler`, I simply fetch data using the `file_get_contents` function, while in the `api.php`, I've created a dynamic cURL process for versatile API calls, which is often provided as an alternative solution in comments.
 
-Idővel átformáltam a mappa struktúrát MVC szemléletűre, azokon belül is próbáltam funkció szerinti php file felosztásra, illetve ha szükséges volt és több file volt köthető 1 adott területhez akkor azokat almappákba rendeztem.
-
+Over time, I restructured the folder hierarchy to follow an MVC approach. Within that, I attempted to organize files based on functionality. If necessary and if multiple files were related to a specific area, I grouped them into subfolders.
 ```
 src/
 │
@@ -40,26 +39,28 @@ src/
 │   ├── resource.php
 │   ├── routes.php
 │   ├── scretch.php
-│   ├── users.php
-│   └── utils.php
+│   └── users.php
 ├── public/
+├── utils.php
 └── index.php
+
 ```
-**Közvetlen átirányítás:**
+#### Direct redirection:
 [index.php](#index)  [utils.php](#utils)  
-**Controllers:**
-[routes.php](#routes) [auth.php](#auth)  
+**Model** [mysql.php](#mysql) [api.php](#api)   
+**Controllers** [routes.php](#routes) [auth.php](#auth)  
+
 
 ## index
 
-Libary karbantartása, fontos hogy a routes legyen utoljára meghívva, tekintve hogy az mindenhez hozzátudjon férni.
+The maintenance of the library is crucial, with the routes being called last, ensuring that they have access to everything.
 
 ## utils
+### `logDB`
+>Over time, the naming was changed from 'logJS' to 'logDB'.
+#### First version
 
->Idővel átlett nevezve logJS -> logDB
-#### Első Verzió
-
-JS esetében kényelmes megoldás volt fejlesztés közben a console.log használata, állapotok kiírása, eredmények és paraméterek kiiratása, ezért PHP függvényen belüli script meghívásakor, bármilyen és bármennyi paraméter meghívható, amik elemenként fog végrehajtódni és a PHP var_dump kiiratása illetve esetleges hibakód kezelése is consolba kerül kiiratásra.
+In the case of JavaScript, it was a convenient solution during development to use `console.log` for debugging purposes, printing out states, results, and parameters. Therefore, when calling the script within a PHP function, any number of parameters can be invoked, each of which will be executed individually, and the output of PHP `console.log` as well as the handling of any error codes will also be printed to the console.
 ```
 function logJS(...$dataArray){
    //Params: if I want to Give a string before, or multiply data to log in a same time, then I have to use '...'
@@ -74,48 +75,45 @@ function logJS(...$dataArray){
    }
 }
 ```
-#### Második Verzió
-Header location problematika miatt hosszútávon nem érdemes használni az első verziót, ugyanis itt is munkafelület kiiratása történik így a header: location nem tud érvényesülni azután.
+#### Second version
 
-SQL táblát hoztam létre ennek kezelésére:
+Due to the Header Location issue, it is not advisable to use the first version in the long run, as it also prints out the workspace, making it impossible for the header: location to take effect afterward.
 
-id - bizonyos szinten szükségtelen, csak formalitás
-response - console logba mit iratnék ki
-date - időpontra -> mp szinten meghatározva az eseményt a könnyebb nyomonkövetés miatt
+To handle this, I created an SQL table:
 
-Tekintve hogy eredetileg Javascript függvény használata miatt lett JS elnevezés, utólag lett logDB-re átnevezve.
+-   id: unnecessary at some level, merely a formality
+-   response: what would be logged in the console
+-   date: timestamp, defined in seconds for easier tracking
+
+Considering that the original naming was based on the use of a JavaScript function, it was later renamed to `logDB`.
 
 ## Controllers
 
 ## routes
 
-### Routes Handler (Step-by-Step)
+#### How Handler works
+Retrieve the method used on the previous page: Request method received by the index page -> `$_SERVER['REQUEST_METHOD']`
 
-Retrieve the method used on the previous page = Request method received by the index page -> $_SERVER['REQUEST_METHOD']
+Which page the user wants to jump to: Requested page from the request -> `$_SERVER['REQUEST_URI']`
 
-Which page the user wants to jump to = Requested page from the request -> $_SERVER['REQUEST_URI']
+Create the page map as routes (with a fallback for page not found): Use a `notFoundHandler`
 
-Create the page map as routes (with a fallback for page not found) -> ?? "notFoundHandler"
+PHP is able to call a function where the function name is a string, and this is the basis of the procedure -> `$handlerFunction()`
 
-PHP is able to call a function where the function name is a string, and this is the basis of the procedure -> $handlerFunction()
+We will need a compiler that is built with the actual page from the template with a prebuilt page -> compileTemplate `render($path, $params=[])`. Collect params like form data, SQL data, and other state data and give them to the pre-built page, and it will return the entire page as a string.
 
-### How Handler works
-
-We will need a compiler that is built with the actual page from the template with a prebuilt page -> compileTemplate Compiler collect params like form data, sql data and other state data and give to the prebuilded page and it give back the whole page as string
 
 ## auth
 
 ### Login system
 
-loginProcessHandler called when it get POST data from /login page. To make sure, let's check if the data is appropriate. Using early return to make the process more faster. Do we get a data? Do we get data from API? The username is valid? Password is valid? If all yes, then make a session and create a session-cookie with the userId. We can verify at any time whether the user is still logged in (isLoggedIn) and authorized(isAuth) to view the page. When the user want to logout(logoutHandler) the process get the actual cookies params and with that, set the expires time to 0 so it will delete that data.
+The `loginHandler` simultaneously handles the rendering of the page for GET requests and the authentication process after submitting the login form via POST. To ensure correctness, let's verify if the data is appropriate. We'll use early return to expedite the process. Do we have data? Are we receiving data from the API? Is the username valid? Is the password valid? If all conditions are met, then create a session and set a session cookie with the `userId`. We can verify at any time whether the user is still logged in using `isLoggedIn` and authenticated using `isAuth` to view the page. When the user wants to logout, the `logoutHandler` retrieves the current cookie parameters and sets the expiration time to 0, thereby deleting that data.
 
-### loginProcessHandler
+**loginProcessHandler**
 
-At first, I utilized the following code snippet for the inclusion of user data in the database. However, upon subsequent review, I opted for a more efficient, simpler, and more functional approach
+At first, I employed the following code snippet to incorporate user data into the database. However, upon further review, I decided to adopt a more efficient, streamlined, and functional approach.
 
-  
-
-> Old version
+Old version:
 
  ```
 $user_index = null;
@@ -127,7 +125,7 @@ foreach ($users as $index => $user) {
 }
  ```
 
-> Better version:
+Better version:
 
  ```
 //list, as array, only usernames
@@ -135,47 +133,38 @@ $usernameList = array_column($users, 'username');
 //search on array, one specific data
 $userIndex = array_search($username, $usernameList );
 ```
-### isLoggedIn
 
-### isAuth
-
-### logoutHandler
-
-### registerHandler
+**registerHandler**
+The `registerHandler` functions similarly to the `loginHandler`. When accessed via the GET method, the page is generated for viewing, while when accessed via POST, the registration process takes place.
 
 ## Model
+I tackled specific tasks either with MySQL or API handling. However, I managed user data management concurrently on both MySQL and API levels.
+## mysql
 
-## mysql.php
-
-Készítettem egy alternatív folyamatot, API helyett MySQL-t használtam a felhasználói adatok feldolgozásához.
+Given that I don't have direct access to the data table, it needs to be created first and populated with data before it can be managed with functions. The process runs in the `checkSQL`, which first tests for the existence of the table; if it doesn't exist, it creates it. If it already exists, it compares the data to ensure its correctness. However, if there are discrepancies, the entire data package is uploaded, and a log tracks which data has been uploaded.
 
 ### checkSQL
 
-Kiegészítő eljárásra van szükség, ellenőrizni, hogy adatbázis tábla és adatok készen álljanak.
-Le kell ellenőrizni hogy a tábla létezik, ha nem akkor hozzuk létre. Több módon próbáltam meg.
+An additional procedure is required to ensure that the database table and data are ready. It needs to check if the table exists; if not, create it. I've tried multiple approaches.
 
 #### Table
 
-CREATE TABLE eljárással és hibakezeléssel kiszűrhető hogy létezett e előtte a tábla (error code: 42S01)
+Using the CREATE TABLE procedure along with error handling, we can determine whether the table existed previously (error code: 42S01).
 
-Amennyiben a tábla már létezett előtte le kell ellenőrizni hogy a tábla adatmennyisége egyezik-e az API forrás adataival. Amennyiben a feltételeknek megfelel, kiléptetjük az ellenőrzésből, early returnnal.
+If the table already existed, we need to check if the data quantity in the table matches the data from the API source. If the conditions are met, we exit the check with an early return.
 
-Abban az esetben ha a táblát ekkor hozzuk létre, akkor a táblát fel kell tölteni, illetve ha nem azonos a tábla és frissíteni kell, vagy hiányos, szintén fel kell tölteni. Itt még id is feltöltésre kerül majd sikeres feltöltés után 'addAutoIncr' -el AUTO incrementbe rakjuk az id-t így id megfelelő módon fog folytatódni és nem ütközik a régi adatokkal.
-> **JJ** "IF NOT EXISTS" kifejezést használva próbáltam eljárni, viszont lefutásakor nincs adat hogy létezett-e előtte a tábla, szándékomban áll átlátni a folyamatokat. Keresés után rátaláltam "SELECT 1 FROM information_schema.tables WHERE table_schema = database() AND table_name = ?" eljárásra ami megfelelő egy előzetes ellenőrzésre tökéletesnek bizonyult. Viszont amint létrehoztam a CREATE TABLE eljárást, egyértelmű lett hogy a tábla nem fog létrejönni ha már létezett, ilyen módon. Így a hibakezelés által, lekérdezem a megfelelő hibakódot, akkor egyértelmű lesz hogy volt-e előtte vagy sem.
+In the case of creating the table at this point, we need to populate it. If the table needs to be updated due to differences or incompleteness, it also needs to be populated. Additionally, an ID is uploaded here and after successful population, we use `addAutoIncr` to put the ID into AUTO increment mode, ensuring it continues properly and does not conflict with existing data.
+> **JJ** Using the `IF NOT EXISTS` expression, I attempted to proceed, but during execution, there is no data to determine whether the table existed previously, and I intend to have visibility into the processes. After some research, I came across the procedure `SELECT 1 FROM information_schema.tables WHERE table_schema = database() AND table_name = ?`, which proved to be perfect for a preliminary check. However, once I created the CREATE TABLE procedure, it became clear that the table would not be created if it already existed in this way. Therefore, through error handling, I query the appropriate error code, which makes it clear whether the table existed before or not.
 
 #### Data
-SQL data upload, uploadDataBatchExe. Ezesetben az adott insert lekérdezést egyessével paramétereztetjük és hajtjuk végre, és kezeljük le az eredményt. Hibakezelésen túl szükséges transition (begin transition - commit) keretbe foglalása ami, hibás lefutás esetén visszaállítja(rollback) az esemény előtti állapotra, elkerülve a félbehagyott módosítási problémákat.
+The SQL data upload is performed using `uploadDataBatchExe`. In this case, each insert query is parameterized individually and executed, and we handle the results accordingly. Besides error handling, it's necessary to encapsulate the process within a transaction (begin transaction - commit), which, in case of a failed execution, rolls back to the state before the event, avoiding incomplete modification issues.
 
-> **JJ**Több módot találtam, hasonló funkció kiépítésére, azért válaszottam ezt a módszert mert egyszerűbb, magabiztosabban használom és ezesetben, 10 record, hatékonysági szempontok nem teljesen szükségesek. Nagyobb adat esetében már megfontolandóbb lenne a többi.
-Bulk insert - ahol több egy INSERT nél több VALUES van hozzá csatolva.
- "multi_query" - mysqli typusnál használható, jelenleg PDO-t használok. Ott előre megadható több SQL összefűzötten majd futtatáskor eredmény kezelésenkét lépked tovább a rendszer.
+> **JJ** I found several methods for implementing a similar functionality, but I chose this method because it's simpler and I feel more confident using it. In this case, where only 10 records are involved, efficiency considerations are not entirely necessary. However, for larger datasets, it would be more advisable to consider the others. 'Bulk insert' - where multiple VALUES are attached to a single INSERT statement. 'multi_query' - can be used with the mysqli type, but I currently use PDO. Here, multiple SQL statements can be provided in advance, concatenated together, and then executed, with the system moving forward handling the results for each.
 
-  
+## api
 
-## api.php
+cURL - Up until now, I used the basic `file_get_contents` function for API handling. I attempted to use cURL, which had been mentioned several times during my learning journey, but I wanted to focus on mastering one language/library at a time.
 
-cURL - eddig file_get_content alap függvényt használtam API kezelésre, megpróbáltam a cURL -t ami többször is felmerült tanulásom során, viszont szerettem volna egyidőben egy nyelvet/libaryt elsajátítatani fókuszáltan.
-
-Kezdetben próbáltam egy egyszerű adathalmaz kiiratást pld a users-t. Amint a kiiratás sikerült, módosítani akartam, bővítgetni tesztelni. Kezdetben belefutottam abba a hibába hogy CURLOPT_RETURNTRANSFER nem került beállításra és okozott némi galibát a kimeneten. Elsődlegesen célirányosan funkciónként hoztam létre a függvényeket, majd API methodusonként, aztán mikor a végére értem és átláttam a működést, egyszerűen összetudtam rakni 1 függvényt amivel bármilyen API -t letudok kezelni. Nem írtam át a kódban mindenhol, viszont API kérésekhez alternatívaként kommentbe odaraktam.
+Initially, I tried to print out a simple dataset, like 'users'. Once the printing was successful, I wanted to modify, expand, and test it. Initially, I encountered an issue where `CURLOPT_RETURNTRANSFER` was not set, causing some trouble in the output. Initially, I purposefully created functions for each task, then for each API method, and once I reached the end and understood the process, I was able to simply put together one function to handle any API. I didn't rewrite everything in the code, but as an alternative for API requests, I placed them in comments.
 
 ## Views

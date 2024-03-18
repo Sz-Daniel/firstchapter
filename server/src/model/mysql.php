@@ -1,7 +1,5 @@
 <?php
 
-
-
 /** APIFunctionön belüli APIcUrlCall hoz hasonlóan gondolkodtam hogy itt is létrehozzak egy dinamikusan működő függvényt, 
  * viszont nem készítem el, fő indok hogy ezesetben nincs szükség annyira változatos hívásokra
  * hívásonként többszörösen összefüggők a szükséges függvények (INSERT INTO VALUE(egyessével) - bindParams(egyessével) )
@@ -152,7 +150,8 @@ function checkSQL(){
     try {
         if (checkUsersTable($pdo)) {
             if (checkUsersData($pdo)) {
-            logDB("Table, data check was successfully");
+                logDB("Table, data check was successfully");
+                return;
             }
          }
          uploadDataBatchExe($pdo);

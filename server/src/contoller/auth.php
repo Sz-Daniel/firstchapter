@@ -57,6 +57,7 @@ function loginProcessHandler($param)
     if(!$userIndex){
         throw new Exception('Users doesnt exist');
     }
+    
     //in hesh case I would use password_verify(), without knowing what kind of hesh they used for password store
     //User database stores password as string, not using hash, I cannot change that
     if(!$users[$userIndex]['password']===$password){
