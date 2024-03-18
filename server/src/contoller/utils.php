@@ -1,5 +1,5 @@
 <?php
-function logJS(...$dataArray)
+function logDB(...$dataArray)
 {
     /**
      * Error-visszatérési érték-adatok logolására használatos.

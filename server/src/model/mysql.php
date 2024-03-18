@@ -21,7 +21,7 @@
         return $userList;
 
     } catch (\Throwable $th) {
-        logJS("User query error:", $th);
+        logDB("User query error:", $th);
         $pdo = null;
         return null;
     }
@@ -42,11 +42,11 @@ function SQLGetUserById( $id ){
             throw new Exception("User doesn't exits.");
         }        
 
-        logJS($user);
+        logDB($user);
         $pdo = null;
         return $user;
     } catch (\Throwable $th) {
-        logJS("User error:", $th);
+        logDB("User error:", $th);
         $pdo = null;
         return null;    
     } 
@@ -77,7 +77,7 @@ function SQLEditUserById( $data = [] ){
         $pdo = null;
         return $user;
     } catch (\Throwable $th) {
-        logJS($th);
+        logDB($th);
         $pdo = null;
         return null;
     }
@@ -100,11 +100,11 @@ function SQLDeleteUserById( $id ){
         if (!$user) {
             throw new Exception("User doesn't exits.");
         }        
-        logJS($id."- user deleted");
+        logDB($id."- user deleted");
         $pdo = null;
         return $user;
     } catch (\Throwable $th) {
-        logJS("User delete error:", $th);
+        logDB("User delete error:", $th);
         $pdo = null;
         return null;
     }
@@ -128,11 +128,11 @@ function SQLCreateUser( $user=[] ){
         if (!$user) {
             throw new Exception("User upload fail");
         }        
-        logJS("User uploaded:", $user);
+        logDB("User uploaded:", $user);
         $pdo = null;
         return $user;
     } catch (\Throwable $th) {
-        logJS("New User upload error:", $th);
+        logDB("New User upload error:", $th);
         $pdo = null;
         return null;
     }
@@ -152,13 +152,13 @@ function checkSQL(){
     try {
         if (checkUsersTable($pdo)) {
             if (checkUsersData($pdo)) {
-            logJS("Table, data check was successfully");
+            logDB("Table, data check was successfully");
             }
          }
          uploadDataBatchExe($pdo);
          addAutoIncr($pdo);
     } catch (Exception $e) {
-        logJS("Hiba: ", $e->getMessage());
+        logDB("Hiba: ", $e->getMessage());
     }finally{
         $pdo = NULL;
     }
@@ -170,7 +170,7 @@ function addAutoIncr($pdo){
      $stmt = $pdo->prepare("ALTER TABLE `users` MODIFY COLUMN id INT AUTO_INCREMENT");
      $stmt->execute();
     } catch (\Throwable $th) {
-     logJS($th);
+     logDB($th);
     }
 }
 
@@ -220,11 +220,11 @@ function uploadDataBatchExe($pdo){
         $pdo->commit();
         // if any data was updated, then log out
         if($idLog['count'] > 0){
-            logJS("Data uploaded:",$idLog);
+            logDB("Data uploaded:",$idLog);
         } 
     } catch (PDOException $e) {
         $pdo->rollBack();
-        logJS("<br>Data upload error: ", $e->getMessage());
+        logDB("<br>Data upload error: ", $e->getMessage());
     }
 }
 
@@ -252,11 +252,11 @@ function checkUsersData($pdo){
         if ($srcCount === $columns) {
             return true;
         } else {
-            logJS("Data mismatch");
+            logDB("Data mismatch");
             return false;
         }
     } catch (PDOException $e) {
-        logJS("User check error: ",$e->getMessage());
+        logDB("User check error: ",$e->getMessage());
         exit;
     }
 }
@@ -282,7 +282,7 @@ function checkUsersTable($pdo){
         try {
             //if the table created then it's empty, later we need to 'uploadBulkData' 
             $stmt->execute();
-            logJS("Table created");
+            logDB("Table created");
             return false;
         } catch (PDOException $e) {
             $errorCode = $e->errorInfo[0];
@@ -290,12 +290,12 @@ function checkUsersTable($pdo){
             if ($errorCode === '42S01') {
                 return true;
             } else {
-                logJS("Table create error: ", $e->getMessage());
+                logDB("Table create error: ", $e->getMessage());
                 exit;
             }
         }
     } catch (PDOException $e) {
-        logJS("Table check error: ",$e->getMessage());
+        logDB("Table check error: ",$e->getMessage());
         exit;
     }
 }
@@ -310,7 +310,7 @@ function getConnection(){
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
     } catch (Exception $e) {
-        logJS("PDO Connection error:", $e);
+        logDB("PDO Connection error:", $e);
         return null;
     }
 }

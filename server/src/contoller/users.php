@@ -34,7 +34,7 @@ function deleteUserHandler()
         }
     
     }else{
-        logJS("userId not set or empty");
+        logDB("userId not set or empty");
         header('Location: /users?info=errorUserDelete');
     }
 }

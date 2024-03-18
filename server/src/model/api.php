@@ -50,14 +50,14 @@ function apiGetCall($param)
             } elseif($type === "PATCH"){
                 curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
             } else {
-                logJS("Wrong type:".$type.$url);
+                logDB("Wrong type:".$type.$url);
                 curl_close($ch);
                 return null;
             }
 
             //Early return with error handle when the param doesn't have body for POST - PATCH - PUT 
             if ($body === null) {
-                logJS("Missing body:".$type.$url);
+                logDB("Missing body:".$type.$url);
                 curl_close($ch);
                 return null;
             }
@@ -73,7 +73,7 @@ function apiGetCall($param)
         //any problem with execute handle here (http error handle below)
         if($curl_response === false)
         {
-            logJS(curl_errno($ch)." - ".curl_error($ch));
+            logDB(curl_errno($ch)." - ".curl_error($ch));
             curl_close($ch);
             return null;
         }
@@ -85,7 +85,7 @@ function apiGetCall($param)
          */
         $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($response_code >= 400) {
-            logJS("HTTP Error: " . $response_code);
+            logDB("HTTP Error: " . $response_code);
             curl_close($ch);
             return null;
         }
@@ -112,14 +112,14 @@ function apiGetCall($param)
         $curl_response=curl_exec($ch);
         if($curl_response === false)
         {
-            logJS(curl_errno($ch)." - ".curl_error($ch));
+            logDB(curl_errno($ch)." - ".curl_error($ch));
             curl_close($ch);
             return null;
         }
   
         $curl_response_info = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($curl_response_info >= 400) {
-            logJS("HTTP Error: " . $curl_response_info);
+            logDB("HTTP Error: " . $curl_response_info);
             curl_close($ch);
             return null;
         }
@@ -142,21 +142,21 @@ function apiGetCall($param)
         $curl_response=curl_exec($ch);
         if($curl_response === "null")
         {
-            logJS("Person doesent exist");
+            logDB("Person doesent exist");
             curl_close($ch);
             return null;
         }
         
         if($curl_response === false)
         {
-            logJS(curl_errno($ch)." - ".curl_error($ch));
+            logDB(curl_errno($ch)." - ".curl_error($ch));
             curl_close($ch);
             return null;
         }
   
         $curl_response_info = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($curl_response_info >= 400) {
-            logJS("HTTP Error: " . $curl_response_info);
+            logDB("HTTP Error: " . $curl_response_info);
             curl_close($ch);
             return null;
         }
@@ -189,14 +189,14 @@ function apiGetCall($param)
         $curl_response = curl_exec($ch);
         if($curl_response === false)
         {
-            logJS(curl_errno($ch)." - ".curl_error($ch));
+            logDB(curl_errno($ch)." - ".curl_error($ch));
             curl_close($ch);
             return null;
         }
 
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($responseCode >= 400) {
-            logJS("HTTP Error: " . $responseCode);
+            logDB("HTTP Error: " . $responseCode);
             curl_close($ch);
             return null;
         }
@@ -225,14 +225,14 @@ function apiGetCall($param)
         $curl_response = curl_exec($ch);
         if($curl_response === false)
         {
-            logJS(curl_errno($ch)." - ".curl_error($ch));
+            logDB(curl_errno($ch)." - ".curl_error($ch));
             curl_close($ch);
             return null;
         }
 
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($responseCode >= 400) {
-            logJS("HTTP Error: " . $responseCode);
+            logDB("HTTP Error: " . $responseCode);
             curl_close($ch);
             return null;
         }
@@ -254,14 +254,14 @@ function apiGetCall($param)
         $curl_response = curl_exec($ch);
         if($curl_response === false)
         {
-            logJS(curl_errno($ch)." - ".curl_error($ch));
+            logDB(curl_errno($ch)." - ".curl_error($ch));
             curl_close($ch);
             return null;
         }
   
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($responseCode >= 400) {
-            logJS("HTTP Error: " . $responseCode);
+            logDB("HTTP Error: " . $responseCode);
             curl_close($ch);
             return null;
         }
@@ -287,14 +287,14 @@ function apiGetCall($param)
         $curl_response = curl_exec($ch);
         if($curl_response === false)
         {
-            logJS(curl_errno($ch)." - ".curl_error($ch));
+            logDB(curl_errno($ch)." - ".curl_error($ch));
             curl_close($ch);
             return null;
         }
   
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($responseCode >= 400) {
-            logJS("HTTP Error: " . $responseCode);
+            logDB("HTTP Error: " . $responseCode);
             curl_close($ch);
             return null;
         }
@@ -321,14 +321,14 @@ function apiGetCall($param)
         $curl_response = curl_exec($ch);
         if($curl_response === false)
         {
-            logJS(curl_errno($ch)." - ".curl_error($ch));
+            logDB(curl_errno($ch)." - ".curl_error($ch));
             curl_close($ch);
             return null;
         }
   
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($responseCode >= 400) {
-            logJS("HTTP Error: " . $responseCode);
+            logDB("HTTP Error: " . $responseCode);
             curl_close($ch);
             return null;
         }
@@ -355,14 +355,14 @@ function apiGetCall($param)
         $curl_response = curl_exec($ch);
         if($curl_response === false)
         {
-            logJS(curl_errno($ch)." - ".curl_error($ch));
+            logDB(curl_errno($ch)." - ".curl_error($ch));
             curl_close($ch);
             return null;
         }
   
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($responseCode >= 400) {
-            logJS("HTTP Error: " . $responseCode);
+            logDB("HTTP Error: " . $responseCode);
             curl_close($ch);
             return null;
         }
@@ -385,14 +385,14 @@ function apiGetCall($param)
         $curl_response = curl_exec($ch);
         if($curl_response === false)
         {
-            logJS(curl_errno($ch)." - ".curl_error($ch));
+            logDB(curl_errno($ch)." - ".curl_error($ch));
             curl_close($ch);
             return null;
         }
   
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($responseCode >= 400) {
-            logJS("HTTP Error: " . $responseCode);
+            logDB("HTTP Error: " . $responseCode);
             curl_close($ch);
             return null;
         }

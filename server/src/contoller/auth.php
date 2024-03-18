@@ -78,7 +78,7 @@ function loginProcessHandler($param)
     header('Location: /');
     exit;
     } catch (\Throwable $th) {
-        logJS("login Process error: ".$th);
+        logDB("login Process error: ".$th);
         header('Location: /login?info=invalidCredentials');
         exit;
     }
@@ -119,7 +119,7 @@ function isLoggedIn()
 
         return true;
     } catch (\Throwable $th) {
-        logJS("isLogged error: ".$th);
+        logDB("isLogged error: ".$th);
         return false;
     }
 } 
