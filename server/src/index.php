@@ -7,6 +7,6 @@ require './contoller/resource.php';
 require './contoller/scretch.php';
 require './contoller/users.php';
 
+require './utils.php';
 require './contoller/auth.php';
-require './contoller/utils.php';
 require './contoller/routes.php';
