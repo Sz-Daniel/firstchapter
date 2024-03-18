@@ -1,29 +1,21 @@
 <?php
-function resourcesHandler(){
-    /**
-     * check the type from POST
-     * merge the url with params, depends on source
-     * query the data and send back to the resources page
-     */
-    $content ="";
-    if (isset($_POST['type'])) {
-        $type = $_POST['type'];
-    
-        $url = ($type === 'https://fakestoreapi.com/users') ? $type : "https://jsonplaceholder.typicode.com/" . $type;
-        
-        $response = file_get_contents($url);
-        $content = json_decode($response, true);
-    }
 
-    //http://localhost:8080/resources -> resources.phtml
+
+function homeHandler()
+{
+
+    $posts = json_decode(file_get_contents("https://jsonplaceholder.typicode.com/posts"),true);
+    //$posts = APIcUrlCall("https://jsonplaceholder.typicode.com/posts");
+
     echo render("wrapper.phtml",[
-        'content' => render('resources.phtml',[
-            'content' => $content
-        ]),
+        'content' => render("/feed/postLists.phtml",[
+            'posts' => $posts
+        ])
     ]);
 }
 
-function commentHandler(){
+function commentHandler()
+{
     /**
      *  GET postId from postList.phtml href="/comments?postId=$post['id']?>"
      *  apiGetCall is a simple php file_get_content result function with the 
@@ -52,5 +44,3 @@ function commentHandler(){
         ]),
     ]);  
 }
-
-?>

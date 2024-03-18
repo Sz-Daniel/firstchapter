@@ -1,11 +1,14 @@
 <?php
+
+
+
 /** APIFunctionön belüli APIcUrlCall hoz hasonlóan gondolkodtam hogy itt is létrehozzak egy dinamikusan működő függvényt, 
  * viszont nem készítem el, fő indok hogy ezesetben nincs szükség annyira változatos hívásokra
  * hívásonként többszörösen összefüggők a szükséges függvények (INSERT INTO VALUE(egyessével) - bindParams(egyessével) )
  * Nem lehetetlen hogy a későbbiekben létre fogom hozni 
  */
 
-function SQLGetUsers(){
+ function SQLGetUsers(){
     try {
         $pdo = getConnection();
 

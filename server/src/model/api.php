@@ -1,4 +1,12 @@
 <?php
+
+function apiGetCall($param)
+{
+    $url = "https://jsonplaceholder.typicode.com/".$param;
+    return json_decode(file_get_contents($url),true);
+}
+
+
     // Full process description on APIcUrlCall
     function APIcUrlCall($url, $type = "GET", $body = null)
     {

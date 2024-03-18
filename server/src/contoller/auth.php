@@ -10,7 +10,7 @@ function loginHandler(){
             break;
         case 'GET':
             echo render("wrapper.phtml",[
-                'content' => render('login.phtml'),
+                'content' => render('/views/auth/login.phtml'),
             ]);
             break;
     }    
@@ -152,4 +152,35 @@ function logoutHandler()
     session_destroy();
 
     header ('Location: /');
+}
+
+function registerHandler()
+{
+    switch ($_SERVER['REQUEST_METHOD']) {
+        case 'POST':
+
+            $user = array(
+                'email' => $_POST['email'],
+                'username' => $_POST['username'],
+                'password' => $_POST['password'],
+                'phone' => $_POST['phone'],
+            );
+            $result = APICreateUser($user);
+            //$result = APIcUrlCall("https://fakestoreapi.com/users/","POST",$user);
+
+            /**API statikusan kezeli le a regisztrációt, valódi regisztráció nem történik,
+             * viszont a felhasználók száma 10 és amennyiben sikeres az utolsó ID azaz 11essel tér vissza
+             */
+            if($result['id'] === 11 ){
+                header('Location: /?info=registerSuccess');
+            }else{
+                header('Location: /?info=registerFailed');
+            };
+            break;
+        case 'GET':
+            echo render("wrapper.phtml",[
+                'content' => render("register.phtml")
+            ]);
+            break;
+    }
 }

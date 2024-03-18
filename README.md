@@ -14,7 +14,8 @@ Sok esetben szándékosan nem egységesek a megoldások, technológiai és függ
 
 [index.php](index.php "Goto index")
 [auth.php](auth.php "Goto auth")
-[SQLFunctions.php](SQLFunctions.phtml "Goto SQLFunctions")
+[SQLFunctions.php](SQLFunctions.php "Goto SQLFunctions")
+[APIFunctions.php](APIFunctions.php "Goto APIFunctions")
 
 ## index.php
 ### Routes Handler (Step-by-Step)
