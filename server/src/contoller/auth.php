@@ -10,7 +10,7 @@ function loginHandler(){
             break;
         case 'GET':
             echo render("wrapper.phtml",[
-                'content' => render('/views/auth/login.phtml'),
+                'content' => render('/auth/login.phtml'),
             ]);
             break;
     }    
@@ -19,7 +19,7 @@ function loginHandler(){
 function loginProcessHandler($param)
 {
     try {
-        /**
+    /**
      * Needs to check in the whole db first
      * then step-by-step verif the data
      * build up the session for userdata as session-cookie
@@ -103,7 +103,7 @@ function isLoggedIn()
         
         //check, have a "userId" session-cookie
         if (!isset($_SESSION['userId'])){
-            throw new Exception('Browser dosent have cookie'); 
+            throw new Exception('Browser dosent have userID'); 
         }
 
         //merge the url with the neccessery data for an API call
@@ -180,7 +180,7 @@ function registerHandler()
             break;
         case 'GET':
             echo render("wrapper.phtml",[
-                'content' => render("register.phtml")
+                'content' => render("auth/register.phtml")
             ]);
             break;
     }

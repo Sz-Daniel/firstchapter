@@ -33,15 +33,13 @@ function deleteUserHandler()
             header('Location: /users?info=userDel');
         }
     
-    }else{
-        logDB("userId not set or empty");
-        header('Location: /users?info=errorUserDelete');
     }
 }
 
 function editUserHandler()
 {
     $user = array(
+        //from hidden field with id value
         'id' => (int)$_POST['id'],
         'email' => $_POST['email'],
         'username' => $_POST['username'],

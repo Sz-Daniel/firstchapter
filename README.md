@@ -15,10 +15,21 @@ As a junior developer, my approach to development is iterative. I initially rely
   
 In many cases, I intentionally use diverse solutions, technologies, and functions. I wanted to showcase the evolution of my solutions and the use of different technologies. For example, in the `homeHandler`, I simply fetch data using the `file_get_contents` function, while in the `api.php`, I've created a dynamic cURL process for versatile API calls, which is often provided as an alternative solution in comments.
 
+Step-by-step explanations are directly available in the code in the form of comments.
+
 Over time, I restructured the folder hierarchy to follow an MVC approach. Within that, I attempted to organize files based on functionality. If necessary and if multiple files were related to a specific area, I grouped them into subfolders.
 ```
 src/
 │
+├── controller/
+│   ├── auth.php
+│   ├── feed
+│   │   ├── comments.phtml
+│   │   └── postLists.phtml
+│   ├── resource.php
+│   ├── routes.php
+│   ├── scretch.php
+│   └── users.php
 ├── model/
 │   ├── api.php
 │   └── mysql.php
@@ -30,16 +41,7 @@ src/
 │   ├── resources.phtml
 │   ├── scretch.phtml
 │   ├── users.phtml
-│   └── mysql.php
-├── controller/
-│   ├── auth.php
-│   ├── feed
-│   │   ├── comments.phtml
-│   │   └── postLists.phtml
-│   ├── resource.php
-│   ├── routes.php
-│   ├── scretch.php
-│   └── users.php
+│   └── wrapper.phtml
 ├── public/
 ├── utils.php
 └── index.php
@@ -47,8 +49,9 @@ src/
 ```
 #### Direct redirection:
 [index.php](#index)  [utils.php](#utils)  
-**Model** [mysql.php](#mysql) [api.php](#api)   
 **Controllers** [routes.php](#routes) [auth.php](#auth)  
+**Model** [mysql.php](#mysql) [api.php](#api)   
+
 
 
 ## index
@@ -167,4 +170,3 @@ cURL - Up until now, I used the basic `file_get_contents` function for API handl
 
 Initially, I tried to print out a simple dataset, like 'users'. Once the printing was successful, I wanted to modify, expand, and test it. Initially, I encountered an issue where `CURLOPT_RETURNTRANSFER` was not set, causing some trouble in the output. Initially, I purposefully created functions for each task, then for each API method, and once I reached the end and understood the process, I was able to simply put together one function to handle any API. I didn't rewrite everything in the code, but as an alternative for API requests, I placed them in comments.
 
-## Views

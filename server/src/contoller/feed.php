@@ -1,6 +1,5 @@
 <?php
 
-
 function homeHandler()
 {
 
@@ -8,7 +7,7 @@ function homeHandler()
     //$posts = APIcUrlCall("https://jsonplaceholder.typicode.com/posts");
 
     echo render("wrapper.phtml",[
-        'content' => render("/feed/postLists.phtml",[
+        'content' => render("feed/postLists.phtml",[
             'posts' => $posts
         ])
     ]);
@@ -16,6 +15,7 @@ function homeHandler()
 
 function commentHandler()
 {
+    isAuth();
     /**
      *  GET postId from postList.phtml href="/comments?postId=$post['id']?>"
      *  apiGetCall is a simple php file_get_content result function with the 
@@ -37,7 +37,7 @@ function commentHandler()
 
     //http://localhost:8080/comments?postId=? -> comments.phtml
     echo render("wrapper.phtml",[
-        'content' => render('comments.phtml',[
+        'content' => render('feed/comments.phtml',[
             'post' => $post,
             'user' => $user,
             'comments' => $comments,
