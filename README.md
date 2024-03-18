@@ -35,7 +35,8 @@ and it give back the whole page as string
 JS esetében kényelmes megoldás volt a fejlesztés közben a console.log használata, állapotok kiírása, eredmények és paraméterek kiiratása, ezért PHP függvényen belüli script meghívásakor, bármilyen és bármennyi paraméter meghívható, amik elemenként fog végrehajtódni és a PHP var_dump kiiratása illetve esetleges hibakód kezelése is consolba kerül kiiratásra. 
 
 
-```function logJS(...$dataArray){
+```
+function logJS(...$dataArray){
     //Params: if I want to Give a string before, or multiply data to log in a same time, then I have to use '...' 
     foreach ($dataArray as  $data) {
         if ($data instanceof Exception) {
@@ -46,7 +47,8 @@ JS esetében kényelmes megoldás volt a fejlesztés közben a console.log haszn
             echo '<script>console.log('.json_encode($data).');</script>';
         }
     }
-}```
+}
+```
 
 
 #### Második Verzió
