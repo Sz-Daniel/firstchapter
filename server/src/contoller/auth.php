@@ -182,3 +182,89 @@ function registerHandler(){
             break;
     }
 }
+
+//Login process handler with JWT Lite (token)
+function loginProcessHandlerJWTLite($param){
+    try {
+    /**
+     * Needs to check in the whole db first
+     * then step-by-step verif the data
+     * build up the session for userdata as session-cookie
+     * which is the key to keep signed in the user
+     */
+  
+    // POST data check
+    $username = $param['username'];
+    $password = $param['password'];
+    if (empty($username)||empty($password)) {
+        throw new Exception('Input empty');
+    }
+  
+    //Get token API call
+    $url ="https://fakestoreapi.com/auth/login";
+    $token = APIcUrlCall($url,"POST",$param);
+  
+    // result check
+    if ($token === null) {
+        throw new Exception('API result problem');
+    }
+  
+    /**
+     * create a session then 
+     * create a session-cookie for user data 
+     * then goes back 
+     */
+    //make sure to have an active session 
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+  
+    //with active session create a 'userToken' cookie
+    $_SESSION['userToken'] =  $token;
+    header('Location: /');
+    exit;
+  
+    } catch (\Throwable $th) {
+        logDB("JWT login Process error: ".$th);
+        header('Location: /login?info=invalidCredentials');
+        exit;
+    }
+  }
+
+  function isLoggedInJWTLite(){
+    try {
+        //make sure to have an active session 
+        if (session_status() === PHP_SESSION_NONE) {
+          session_start();
+        }
+
+        /**Early Return
+         * Check every detail on session-cookie
+         */
+        //Check, if the browser have any cookie
+        if (!isset($_COOKIE[session_name()]) || empty($_COOKIE[session_name()])) {
+            throw new Exception('Browser dosent have session cookie'); 
+        }
+        
+        //check, have a "userToken" session-cookie
+        if (!isset($_SESSION['userToken']) || empty($_SESSION['userToken'])){
+            throw new Exception('User is not logged in'); 
+        }
+
+        return true;
+    } catch (\Throwable $th) {
+        logDB("isLogged error: ".$th);
+        return false;
+    }
+} 
+
+function isAuthJWTLite(){
+    /**
+     * Make sure is the user able to see the page
+     * or go back to login page
+     */
+    if (!isLoggedInJWTLite()) {
+        header('Location: /login');
+        exit;  
+    }
+}

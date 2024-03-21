@@ -102,14 +102,17 @@ PHP is able to call a function where the function name is a string, and this is 
 
 We will need a compiler that is built with the actual page from the template with a prebuilt page -> compileTemplate `render($path, $params=[])`. Collect params like form data, SQL data, and other state data and give them to the pre-built page, and it will return the entire page as a string.
 
-Renderhez létrehoztam egy `wrapper.phtml` filet ami egy teljes html oldal-t tartalmaz, tartalom nélkül. Tartalmazza a header és footer oldal részeket és középen egy php 'content' paraméterre hivatkozva tudjuk feltölteni tartalommal rekurzív módon, azaz a content magába is képesek vagyunk legenerálni egy már előre elkészített funkcionális phtml oldal-rész struktúrát. 
+I created a `wrapper.phtml` file for rendering, which contains a complete HTML page structure without content. It includes header and footer sections, and in the middle, referencing a PHP 'content' parameter, we can fill it with content recursively. This means that the content can also include a pre-prepared functional HTML page segment.
 
 
 ## auth
 
 ### Login system
-
+#### First version
 The `loginHandler` simultaneously handles the rendering of the page for GET requests and the authentication process after submitting the login form via POST. To ensure correctness, let's verify if the data is appropriate. We'll use early return to expedite the process. Do we have data? Are we receiving data from the API? Is the username valid? Is the password valid? If all conditions are met, then create a session and set a session cookie with the `userId`. We can verify at any time whether the user is still logged in using `isLoggedIn` and authenticated using `isAuth` to view the page. When the user wants to logout, the `logoutHandler` retrieves the current cookie parameters and sets the expiration time to 0, thereby deleting that data.
+
+#### Second version (not active)
+The difference is that here it stores Token instead of `userId`. Initially, I only learned storing the `userID` and also checked its data correctness separately in a step where isLoggedIn is verified. Afterwards, I modified it to request the token and store only that information. I gave the `JWTLite` extension name as these procedures are not yet fully comprehensive. During my research, I noticed that it operates based on a complex library, and I would prefer to delve deeper into this in my next project, which will be based on Laravel.
 
 **loginProcessHandler**
 
