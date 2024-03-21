@@ -1,8 +1,5 @@
 <?php
-
-function homeHandler()
-{
-
+function homeHandler(){
     $posts = json_decode(file_get_contents("https://jsonplaceholder.typicode.com/posts"),true);
     //$posts = APIcUrlCall("https://jsonplaceholder.typicode.com/posts");
 
@@ -13,8 +10,8 @@ function homeHandler()
     ]);
 }
 
-function commentHandler()
-{
+// /comments?postId= GET
+function commentHandler(){
     isAuth();
     /**
      *  GET postId from postList.phtml href="/comments?postId=$post['id']?>"

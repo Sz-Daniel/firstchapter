@@ -4,19 +4,27 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 offset-md-2">
-                <!-- Main Post -->
-                <div class="post-container">
-                    <h2><a href="https://jsonplaceholder.typicode.com/users/<?= $user['id']?>"><?= $user['username']?> - <?= $user['name']?></a></h2>
+                <!-- Post data -->
+                <div class="post-container" >
+                    <div id="mainDiv">
+                        <!-- Poster user data -->
+                        <h2><?= $user['id']?> <?= $user['username']?> - <?= $user['name']?></h2>
+                    </div>
+                    <!-- Post content -->
                     <h4><?= $post['title'] ?></h4>
                     <p><?= $post['body'] ?></p>
                 </div>
-                <!-- Comments -->
+                <!-- Comment section -->
                 <div class="comment-container">
                     <h3>Comments</h3>
+<!-- Every comment one-by-one -->
 <?php foreach($params['comments'] as $comment): ?>   
                     <div class="comment">
+                        <!-- Commenter's name -->
                         <p><strong><?= $comment['name'] ?></strong></p>
+                        <!-- Commenter's email -->
                         <p><?= $comment['email'] ?></p>
+                        <!-- Comment text -->
                         <p><?= $comment['body'] ?></p>
                     </div>
 <?php endforeach?> 

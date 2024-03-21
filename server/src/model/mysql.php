@@ -1,9 +1,9 @@
 <?php
-
-/** APIFunctionön belüli APIcUrlCall hoz hasonlóan gondolkodtam hogy itt is létrehozzak egy dinamikusan működő függvényt, 
- * viszont nem készítem el, fő indok hogy ezesetben nincs szükség annyira változatos hívásokra
- * hívásonként többszörösen összefüggők a szükséges függvények (INSERT INTO VALUE(egyessével) - bindParams(egyessével) )
- * Nem lehetetlen hogy a későbbiekben létre fogom hozni 
+// I could also expand and create the table structure in schema.sql, but this was perfect practice like this.
+/** Similar to APIcUrlCall within APIFunction, I thought about creating a dynamically functioning function here as well.
+ * However, I didn't implement it, the main reason being that in this case, there is not such a need for varied calls.
+ * The necessary functions are closely related for each call (INSERT INTO VALUE (one by one) - bindParams (one by one)).
+ * It's not impossible that I will create it later on.
  */
 
  function SQLGetUsers(){
@@ -27,19 +27,28 @@
 
 function SQLGetUserById( $id ){
     try {
+        //init
         $pdo = getConnection();
 
+        //query
         $sql = "SELECT * FROM `users` WHERE id = :id";
         $stmt = $pdo->prepare($sql);
 
+        //param setup for query
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
+        //execute
         $stmt->execute();
+
+        //result progress - only ONE data we need FETCH not fetchAll
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        //if the result not one
         if (!$user) {
             throw new Exception("User doesn't exits.");
         }        
 
+        //result handler
         logDB($user);
         $pdo = null;
         return $user;
@@ -140,22 +149,23 @@ function SQLCreateUser( $user=[] ){
 function checkSQL(){
     /**
      * Table exists? , Data was valid?
-     * True - True = Early exit.
-     * True - False = uploadBulkData
-     * False - null = in checkUsersTable() the empty table will created. 
-     * Last both case needs 'uploadBulkData'
+     * checkUsersTable(True) - checkUsersData(True) = Early exit.
+     * checkUsersTable(True) - checkUsersData(false) = upload all adata
+     * checkUsersTable(False) - checkUsersData(null) = in checkUsersTable() the empty table will created. 
+     * Last both case needs 'uploadDataBatchExe'
+     * Make sure about auto_increment 'addAutoIncr'
      * It wont duplicate the data, by "id", log out every uploaded data.
      */
     $pdo = getConnection();
     try {
         if (checkUsersTable($pdo)) {
-            if (checkUsersData($pdo)) {
-                logDB("Table, data check was successfully");
-                return;
+            if (!checkUsersData($pdo)) {
+                uploadDataBatchExe($pdo);
             }
+         } else {
+            uploadDataBatchExe($pdo);
+            addAutoIncr($pdo);
          }
-         uploadDataBatchExe($pdo);
-         addAutoIncr($pdo);
     } catch (Exception $e) {
         logDB("Hiba: ", $e->getMessage());
     }finally{
@@ -164,6 +174,12 @@ function checkSQL(){
 }
 
 function addAutoIncr($pdo){
+    /**
+     * If the table has been created without auto_increment,
+     * it is so that there won't be any problem with IDs during subsequent data uploads,
+     * so afterwards, the table will be modified so that for further form uploads,
+     * the ID will be continuous.
+     */
     try {
      //ALTER TABLE `users` MODIFY COLUMN id INT AUTO_INCREMENT PRIMARY KEY;
      $stmt = $pdo->prepare("ALTER TABLE `users` MODIFY COLUMN id INT AUTO_INCREMENT");
@@ -184,15 +200,15 @@ function uploadDataBatchExe($pdo){
     ];
 
     /** ON DUPLICATE
-     * kulcs alapján ellenőrzi, ez a record létezik-e már az adott táblában.
+     * checks based on the key whether this record already exists in the given table.
      */
     $sql = 'INSERT INTO users(id,email,username,pwd,phone) 
         VALUES(:id,:email,:username,:pwd,:phone) 
         ON DUPLICATE KEY UPDATE id = :id';
 
     /** Transaction
-     * Használata, tekintve hogy több tranzakció is lefut, érdemes megfigyelni hogy jól futnak-e le.
-     * beginTransaction megynitni, commital zárni és hibakezelésként rollbackelni, visszavonni. 
+     * Its usage, considering that multiple transactions are executed, it's worth observing if they run properly.
+     * beginTransaction to start, commit to close, and rollback for error handling, to revert.
      */
     try {
         $pdo->beginTransaction();
@@ -235,8 +251,8 @@ function userCount(){
 
 function checkUsersData($pdo){
     /**
-     * -Get the number of data, what the users table have
-     * -Get the number of data of API source and compare and check if the SQL data is uptodate
+     * Get the number of data, what the users table have
+     * Get the number of data of API source and compare and check if the SQL data is uptodate
      */
     try {
         //COUNT the number of result
@@ -261,11 +277,10 @@ function checkUsersData($pdo){
 }
 
 function checkUsersTable($pdo){
-
     /**
-     * Biztosra kell mennünk hogy a tábla létezik
-     * Amennyiben létezik PDOExceptionnal visszatér és fix hibakód alapján azonosítva továbblépünk
-     * Ha minden lefut, akkor létrejön de tudjuk hogy üres a táblánk.
+     * We need to make sure that the table exists.
+     * If it exists, it returns with a PDOException, and we proceed based on the fixed error code.
+     * If everything runs, then it will be created, but we know that our table will be empty.
      */
     try {
         $sql = "CREATE TABLE `users` (
@@ -301,11 +316,13 @@ function checkUsersTable($pdo){
 
 function getConnection(){
     try {
+        //Set the pdo
         $pdo = new PDO ( 
             'mysql:host='.$_SERVER['DB_HOST'].';dbname='.$_SERVER['DB_NAME'],
             $_SERVER['DB_USER'],
             $_SERVER['DB_PASSWORD']
         );
+        //Set Error handling
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
     } catch (Exception $e) {

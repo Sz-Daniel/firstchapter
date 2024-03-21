@@ -1,6 +1,5 @@
 <?php
-function scretchHandler()
-{
+function scretchHandler(){
     /**
      * Place to trying new functions
      */

@@ -1,12 +1,13 @@
 <?php
+
 function logDB(...$dataArray)
 {
     /**
-     * Error-visszatérési érték-adatok logolására használatos.
-     * Minden paraméterben megadott adat egy-egy recordként feltöltésre kerül a 'log' adatbázisba
-     * id-dátum szerint mellékelve az azaonosításhoz
-     * Külön kezeli az Exceptionöket de ugyan úgy feltöltésre kerülnek.
-    */
+     * Used for logging error return value data.
+     * Each data provided in the parameters will be uploaded as a record in the 'log' database,
+     * accompanied by an ID-date for identification.
+     * It handles exceptions separately, but they are still uploaded.
+     */
     //Params: if I want to Give a string before, or multiply data to log in a same time, then I have to use '...' 
     $pdo  = getConnection();
     $stmt = $pdo->prepare("INSERT INTO log(response) VALUES(:response)");

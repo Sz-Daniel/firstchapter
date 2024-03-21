@@ -1,4 +1,8 @@
 <?php
+/** /login GET POST
+ * Normal login page on GET which POST the login data
+ * on POST the login progress
+ */
 function loginHandler(){
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'POST':
@@ -9,15 +13,13 @@ function loginHandler(){
             loginProcessHandler($loginData);
             break;
         case 'GET':
-            echo render("wrapper.phtml",[
-                'content' => render('/auth/login.phtml'),
-            ]);
+            $content = render('/auth/login.phtml');
+            echo render("wrapper.phtml",['content' => $content]);
             break;
     }    
 }
 
-function loginProcessHandler($param)
-{
+function loginProcessHandler($param){
     try {
     /**
      * Needs to check in the whole db first
@@ -85,8 +87,7 @@ function loginProcessHandler($param)
     }
 }
 
-function isLoggedIn()
-{
+function isLoggedIn(){
     try {
         /**Early Return
          * Check every detail on session-cookie
@@ -125,23 +126,19 @@ function isLoggedIn()
     }
 } 
 
-function isAuth()
-{
+function isAuth(){
     /**
      * Make sure is the user able to see the page
-     * or go back to main page
+     * or go back to login page
      */
     if (!isLoggedIn()) {
         header('Location: /login');
         exit;  
     }
-
-    header('Location: /');
-    exit;
 }
 
-function logoutHandler()
-{
+// /logout GET
+function logoutHandler(){
 
     if (!isset($_SESSION)) {
         session_start();
@@ -155,8 +152,8 @@ function logoutHandler()
     header ('Location: /');
 }
 
-function registerHandler()
-{
+// /register POST
+function registerHandler(){
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'POST':
 
@@ -169,8 +166,8 @@ function registerHandler()
             $result = APICreateUser($user);
             //$result = APIcUrlCall("https://fakestoreapi.com/users/","POST",$user);
 
-            /**API statikusan kezeli le a regisztrációt, valódi regisztráció nem történik,
-             * viszont a felhasználók száma 10 és amennyiben sikeres az utolsó ID azaz 11essel tér vissza
+            /** The API handles registration statically, real registration does not occur,
+             * however, the number of users is 10 and if successful, the last ID returns with 11.
              */
             if($result['id'] === 11 ){
                 header('Location: /?info=registerSuccess');

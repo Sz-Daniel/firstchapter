@@ -23,9 +23,7 @@ src/
 │
 ├── controller/
 │   ├── auth.php
-│   ├── feed
-│   │   ├── comments.phtml
-│   │   └── postLists.phtml
+│   ├── feed.php
 │   ├── resource.php
 │   ├── routes.php
 │   ├── scretch.php
@@ -37,7 +35,9 @@ src/
 │   ├── auth
 │   │   ├── login.phtml
 │   │   └── register.phtml
-│   ├── feed.phtml
+│   ├── feed
+│   │   ├── comments.phtml
+│   │   └── postLists.phtml
 │   ├── resources.phtml
 │   ├── scretch.phtml
 │   ├── users.phtml
@@ -49,7 +49,7 @@ src/
 ```
 #### Direct redirection:
 [index.php](#index)  [utils.php](#utils)  
-**Controllers** [routes.php](#routes) [auth.php](#auth)  
+**Controllers** [routes.php](#routes) [auth.php](#auth) [resource.php](#resource) [scretch.php](#scretch) [feed.php](#feed) [users.php](#users)    
 **Model** [mysql.php](#mysql) [api.php](#api)   
 
 
@@ -96,14 +96,13 @@ Considering that the original naming was based on the use of a JavaScript functi
 
 #### How Handler works
 Retrieve the method used on the previous page: Request method received by the index page -> `$_SERVER['REQUEST_METHOD']`
-
 Which page the user wants to jump to: Requested page from the request -> `$_SERVER['REQUEST_URI']`
-
 Create the page map as routes (with a fallback for page not found): Use a `notFoundHandler`
-
 PHP is able to call a function where the function name is a string, and this is the basis of the procedure -> `$handlerFunction()`
 
 We will need a compiler that is built with the actual page from the template with a prebuilt page -> compileTemplate `render($path, $params=[])`. Collect params like form data, SQL data, and other state data and give them to the pre-built page, and it will return the entire page as a string.
+
+Renderhez létrehoztam egy `wrapper.phtml` filet ami egy teljes html oldal-t tartalmaz, tartalom nélkül. Tartalmazza a header és footer oldal részeket és középen egy php 'content' paraméterre hivatkozva tudjuk feltölteni tartalommal rekurzív módon, azaz a content magába is képesek vagyunk legenerálni egy már előre elkészített funkcionális phtml oldal-rész struktúrát. 
 
 
 ## auth

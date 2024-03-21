@@ -20,9 +20,13 @@ $routes = [
         '/users/delete' => 'deleteUserHandler',
     ],
     "POST" => [
+        //Selected type var_dump 
         '/resources' => 'resourcesHandler',
+        //Login progress
         '/login' => 'loginHandler',
+        //user form editing
         '/users/edit' => 'editUserHandler',
+        //Register progress
         '/register' => 'registerHandler',
     ]
 ];
@@ -43,8 +47,7 @@ $safeHandlerFunction = function_exists($handlerFunction) ? $handlerFunction : "n
 //Handler call
 $safeHandlerFunction();
 
-function render($path, $params=[])
-{
+function render($path, $params=[]){
     ob_start();
     require __DIR__.'/../views/'.$path;
     return ob_get_clean();

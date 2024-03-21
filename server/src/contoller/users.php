@@ -1,7 +1,7 @@
 <?php 
-
-function usersHandler()
-{
+// /users GET 
+function usersHandler(){
+    checkSQL();
     $id = '';
     if (isset($_GET['editId']) && !empty($_GET['editId'])){
         $id =(int)$_GET['editId'];
@@ -19,8 +19,8 @@ function usersHandler()
     ]);
 }
 
-function deleteUserHandler()
-{
+// /users/delete?userId= GET
+function deleteUserHandler(){
     //datacheck
     if (isset($_GET['userId']) && !empty($_GET['userId'])){
         $id =(int)$_GET['userId'];
@@ -36,8 +36,8 @@ function deleteUserHandler()
     }
 }
 
-function editUserHandler()
-{
+// /users?editId= POST
+function editUserHandler(){
     $user = array(
         //from hidden field with id value
         'id' => (int)$_POST['id'],

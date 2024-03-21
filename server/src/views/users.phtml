@@ -1,10 +1,16 @@
 <?php 
-// Ebben a szegmensben azért használok SQL adat lekérés és módosítást,
-// mert az API verziósnál nem történik tényleges változtatás
+/**
+ * In this segment, I use SQL data retrieval and modification because 
+ * there are no actual changes happening at the API version.
+ */
+//$params['users'] -> $users,  $params['id']
 $users = $params['users'] ?>
+
+<!-- Every user -->
 <section>
     <div class="my-3">
         <ul class="list-group">
+        <!-- Every user-->
         <? foreach ($users as $user):?>
             <li class="list-group-item">
             <a href="/users/delete?userId=<?= $user['id']?>" class="btn btn-danger">Delete</a>
@@ -18,6 +24,7 @@ $users = $params['users'] ?>
     </div>
 </section>
 
+<!-- Register section -->
 <section>
     <h3 class="my-3">Register</h3>
     <div class="mb-3">
@@ -39,11 +46,12 @@ $users = $params['users'] ?>
                 <input type="text" class="form-control" name="phone" id="inputPhoneReg" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Register</button>
         </form>
     </div>
 </section>
 
+<!-- edit section  --> 
 <? if (isset($_GET['editId']) && !empty($_GET['editId']) ): 
     $editId = (int)$_GET['editId'];
     $user = SQLGetUserById($editId);
@@ -52,6 +60,7 @@ $users = $params['users'] ?>
     <h3 class="my-3">Edit</h3>
     <div class="mb-3">
         <form action="/users/edit" method="post">
+            <!-- hidden input for POST the id as well -->
             <input type="hidden" name="id" id="hiddenField" value="<?= $user['id'] ?>" />
             <div class="mb-3">
                 <label for="inputEmailEdit" class="form-label">Email</label>
@@ -70,7 +79,7 @@ $users = $params['users'] ?>
                 <input type="text" class="form-control" id="inputPhoneEdit" name="phone" value="<?= $user['phone']?>">
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Edit</button>
         </form>
     </div>
 </section>

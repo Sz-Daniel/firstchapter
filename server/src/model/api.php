@@ -1,18 +1,23 @@
 <?php
+/**
+ * As I evolved over time, I learned and refined methods, just as I did here.
+ * I kept all types of solutions as they were, and when I found a more efficient, better solution,
+ * I solved it with that, intentionally avoiding refactoring.
+ * My first solution was `apiGetCall`, the current last one was `APIcUrlCall`.
+ */
+function apiGetCall($param){
 
-function apiGetCall($param)
-{
     $url = "https://jsonplaceholder.typicode.com/".$param;
     return json_decode(file_get_contents($url),true);
 }
 
-// Full process description on APIcUrlCall
-function APIcUrlCall($url, $type = "GET", $body = null)
-{
+
+function APIcUrlCall($url, $type = "GET", $body = null){
+    // return null || assoc_array
     /**Universal usage for every kind of API call with cURL
      * url should be full format with query
-     * set for all type of CRUD - GET-POST-PUT-PATCH-DELETE
-     * body need to be assoc_array
+     * set for all type of CRUD - GET - POST - PUT - PATCH - DELETE
+     * body need to be assoc_array for POST - PUT - PATCH
      * Any kind of error will logged to 'log' database
      * cURL not support try-catch error handling => data testing and early return with null as error
      */
@@ -23,7 +28,7 @@ function APIcUrlCall($url, $type = "GET", $body = null)
         //url set 
         CURLOPT_URL => $url,
         //in default the result would be on the page directly
-        //with CURLOPT_RETURNTRANSFER, the resoult will get from curl_exec($ch)
+        //with CURLOPT_RETURNTRANSFER, the result will get from curl_exec($ch)
         CURLOPT_RETURNTRANSFER => true,
         //in that case when the API couldn't elérhető, timeout set for 30sec
         CURLOPT_TIMEOUT => 30,
@@ -40,7 +45,10 @@ function APIcUrlCall($url, $type = "GET", $body = null)
     
     // CRUD nak megfelelő beállítások létrehozása `$type` alapján
     if ($type === "GET" || $type === "DELETE") {
+        
+        //GET OR DELETE
         curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, $type);
+
     } else {
         if ($type === "POST"){
             curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -90,16 +98,20 @@ function APIcUrlCall($url, $type = "GET", $body = null)
     }
 
     /**
-     * if any early reaturn error handly doesnt procced at this point,
+     * if any early return error handly doesnt procced at this point,
      * the result is ok and will decoded from json and curl session closed
      */
     $response_data = json_decode( $curl_response, true);
     curl_close($ch);
     return $response_data;
 }
+ 
+/**
+ * Functions with the same purpose as those created at the SQL level.
+ */
+function APIGetUsers(){
 
-function APIGetUsers()
-{
+
     $url = "https://fakestoreapi.com/users";
 
     $ch = curl_init();
@@ -130,8 +142,7 @@ function APIGetUsers()
 
 }
 
-function APIGetUserById($id)
-{
+function APIGetUserById($id){
     $url = "https://fakestoreapi.com/users/".$id;
     $ch = curl_init();
 
@@ -167,8 +178,7 @@ function APIGetUserById($id)
     return $data;
 }
 
-function APIEditUserById($id, $body, $type = false) 
-{
+function APIEditUserById($id, $body, $type = false){
     //type 0 PUT - 1 PATCH
     $post_data = json_encode($body);
 
@@ -209,8 +219,7 @@ function APIEditUserById($id, $body, $type = false)
 
 }
 
-function APICreateUser($body) 
-{
+function APICreateUser($body){
     $post_data = json_encode($body);
     $url = "https://fakestoreapi.com/users/";
 
@@ -246,16 +255,26 @@ function APICreateUser($body)
 
 }
 
-function curl_GET($url)
-{
+/**
+ * Practicing, reviewing, and mastering cUrl.
+ * The APIcUrlCall was born from combining these.
+ */
+function curl_GET($url){
+    //init
+    // I don't handle it as curl_init($url); because I feel it's safer to set it up this way.
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
 
+    //setop 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
+    //type setop not need for GET
+    //execute
     $curl_response = curl_exec($ch);
+
+    //error section
     if($curl_response === false)
     {
         logDB(curl_errno($ch)." - ".curl_error($ch));
@@ -270,15 +289,17 @@ function curl_GET($url)
         return null;
     }
 
+    //result handling
     $data = json_decode( $curl_response, true);
     curl_close($ch);
     return $data;
 }
 
-function curl_POST($url ,$body)
-{
+function curl_POST($url ,$body){
+    //data format
     $post_data = json_encode($body);
-
+    
+    //init
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
 
@@ -286,6 +307,7 @@ function curl_POST($url ,$body)
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     
+    //type setop POST
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
     
@@ -309,8 +331,7 @@ function curl_POST($url ,$body)
     return $data;
 }
 
-function curl_PATCH($url ,$body)
-{
+function curl_PATCH($url ,$body){
     $post_data = json_encode($body);
 
     $ch = curl_init();
@@ -320,6 +341,7 @@ function curl_PATCH($url ,$body)
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 
+    //type setop PATCH 
     curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
 
@@ -344,8 +366,8 @@ function curl_PATCH($url ,$body)
     return $data;
 }
 
-function curl_PUT($url ,$body)
-{
+function curl_PUT($url ,$body){
+
     $post_data = json_encode($body);
 
     $ch = curl_init();
@@ -354,12 +376,14 @@ function curl_PUT($url ,$body)
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-
+    
+    //type setop PUT 
     curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
 
     
     $curl_response = curl_exec($ch);
+
     if($curl_response === false)
     {
         logDB(curl_errno($ch)." - ".curl_error($ch));
@@ -379,8 +403,7 @@ function curl_PUT($url ,$body)
     return $data;
 }
 
-function curl_DELETE($url)
-{
+function curl_DELETE($url){
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
 
@@ -388,6 +411,7 @@ function curl_DELETE($url)
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     
+    //type setop DELETE 
     curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 
     $curl_response = curl_exec($ch);
@@ -411,8 +435,7 @@ function curl_DELETE($url)
 }
 
 //For error testing
-function curl_error_test($url) 
-{
+function curl_error_test($url){
     /**
      * curl_error_test("http://expamle.com");          // CURL Error: Could not resolve host: expamle.com
      * curl_error_test("http://example.com/whatever"); // HTTP Error: 404
@@ -428,7 +451,6 @@ function curl_error_test($url)
     * $responseBody is false
     * curl_errno() returns non-zero number
     * curl_error() returns non-empty string
-    * which one to use is up too you
     */
     if ($responseBody === false) {
         return "CURL Error: " . curl_error($ch);
