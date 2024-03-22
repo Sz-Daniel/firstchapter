@@ -2,6 +2,16 @@
 
 Currently, my main focus is on the PHP language and the application of learned functionalities such as MySQL, CRUD, Login, and Routes, MVC. Once I exhaust my knowledge in this language, I plan to continue with JavaScript, refactor functions, and, if possible, manually format using Bootstrap at the very end.
 
+### Git project build up
+
+I use it based on this, I don't have much experience with Docker yet, for now.
+
+- Download and install Docker from https://www.docker.com/products/docker-desktop/
+- Check if it runs properly. There might be an issue with the WSL version; in my experience, if it's not correct, it will prompt you where to download it from.
+- Once the program is running properly, start the IDE and clone the repository.
+- From the main folder, type docker-compose up.
+- Hope it works :)
+
 ### Long-term plan:
 
 Once I completely finish this 'chapter,' I will create an entirely different project with an active API source. 
