@@ -22,12 +22,15 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
+--
+-- Tábla szerkezet ehhez a táblához `log`
+--
 CREATE TABLE `log` (
-        `id` INT NOT NULL AUTO_INCREMENT , 
-        `response` TEXT NOT NULL , 
-        `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-         PRIMARY KEY (`id`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    `id` INT NOT NULL AUTO_INCREMENT , 
+    `response` TEXT NOT NULL , 
+    `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+      PRIMARY KEY (`id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
       
 --
 -- Tábla szerkezet ehhez a táblához `cities`

@@ -11,7 +11,6 @@ function apiGetCall($param){
     return json_decode(file_get_contents($url),true);
 }
 
-
 function APIcUrlCall($url, $type = "GET", $body = null){
     // return null || assoc_array
     /**Universal usage for every kind of API call with cURL
