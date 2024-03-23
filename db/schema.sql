@@ -24,6 +24,16 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Log
+--
+CREATE TABLE `test_db`. (
+  `id` INT NOT NULL AUTO_INCREMENT , 
+  `response` TEXT NOT NULL , 
+  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+   PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+--
 -- Tábla szerkezet ehhez a táblához `cities`
 --
 
