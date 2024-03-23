@@ -10,7 +10,7 @@ I use it based on this, I don't have much experience with Docker yet, for now.
 - Download and install Docker from https://www.docker.com/products/docker-desktop/
 - Check if it runs properly. There might be an issue with the WSL version; in my experience, if it's not correct, it will prompt you where to download it from.
 - Once the program is running properly, start the IDE and clone the repository.
-- From the main folder, type docker-compose up --build.
+- From the main folder, type `docker-compose up --build`.
 - Hope it works :)
 
 ### Long-term plan:
