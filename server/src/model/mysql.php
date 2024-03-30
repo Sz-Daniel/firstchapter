@@ -276,25 +276,6 @@ function checkUsersData($pdo){
     }
 }
 
-
-function getConnection(){
-    try {
-        //Set the pdo
-        $pdo = new PDO ( 
-            'mysql:host='.$_SERVER['DB_HOST'].';dbname='.$_SERVER['DB_NAME'],
-            $_SERVER['DB_USER'],
-            $_SERVER['DB_PASSWORD']
-        );
-        //Set Error handling
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $pdo;
-    } catch (Exception $e) {
-        logDB("PDO Connection error:", $e);
-        return null;
-    }
-}
-
-
 function checkUsersTable($pdo){
     /**
      * We need to make sure that the table exists.

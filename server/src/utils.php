@@ -1,4 +1,25 @@
 <?php
+function globalVarVerif($var){
+    // In the future, data verification will be simpler with the use of this.
+    return (isset($var) && !empty($var));
+}
+
+function getConnection(){
+    try {
+        //Set the pdo
+        $pdo = new PDO ( 
+            'mysql:host='.$_SERVER['DB_HOST'].';dbname='.$_SERVER['DB_NAME'],
+            $_SERVER['DB_USER'],
+            $_SERVER['DB_PASSWORD']
+        );
+        //Set Error handling
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    } catch (Exception $e) {
+        logDB("PDO Connection error:", $e);
+        return null;
+    }
+}
 
 function logDB(...$dataArray)
 {
