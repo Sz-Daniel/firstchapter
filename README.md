@@ -1,7 +1,10 @@
 2024-03-23
+# work-in-progress
+Php Unit testing. 
+
 # firstchapter
 
-Currently, my main focus is on the PHP language and the application of learned functionalities such as MySQL, CRUD, Login, and Routes, MVC. Once I exhaust my knowledge in this language, I plan to continue with JavaScript, refactor functions, and, if possible, manually format using Bootstrap at the very end.
+Currently, my main focus is on the PHP language and the application of learned functionalities such as MySQL, CRUD, Login, Routes, MVC, PHP Unit test. Once I exhaust my knowledge in this language, I plan to continue with JavaScript, refactor functions, and, if possible, manually format using Bootstrap at the very end.
 
 ### Git project build up
 
